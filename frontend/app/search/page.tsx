@@ -4,19 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Content, Category } from '@/lib/types';
-import { Card } from '@/components/ui/Card';
-import {
-  Search as SearchIcon,
-  Filter,
-  Clock,
-  Eye,
-  BookOpen,
-  Video,
-  FileSpreadsheet,
-  FileText,
-  Sparkles,
-  X,
-} from 'lucide-react';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -32,8 +19,8 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load categories for filter dropdown
-    api.get<{ success: boolean; categories: Category[] }>('/categories')
+    api
+      .get<{ success: boolean; categories: Category[] }>('/categories')
       .then((data) => setCategories(data.categories || []))
       .catch(console.error);
   }, []);
@@ -85,18 +72,18 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="py-12 sm:py-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-16 sm:py-24 min-h-screen bg-[#040813] text-slate-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop">
         {/* Header */}
-        <div className="max-w-3xl mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-xs font-mono uppercase text-cyan-300 mb-4">
-            <SearchIcon className="w-3.5 h-3.5" />
+        <div className="max-w-3xl mb-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container/10 border border-secondary-container/30 text-xs font-mono uppercase text-secondary-container mb-4 shadow-[0_0_15px_rgba(254,222,178,0.15)]">
+            <span className="material-symbols-outlined text-[15px]">search</span>
             Global Repository
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-4">
+          <h1 className="font-headline-lg text-headline-lg sm:text-display-lg text-surface-container-lowest tracking-tight mb-4 uppercase">
             Search The Ecosystem
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="font-body-lg text-body-lg text-on-primary-container leading-relaxed font-light">
             Query across business models, company equity analyses, candlestick mechanics, and quantitative datasets.
           </p>
         </div>
@@ -104,17 +91,19 @@ export default function SearchPage() {
         {/* Global Search Bar */}
         <form onSubmit={handleSearchSubmit} className="mb-8">
           <div className="relative">
-            <SearchIcon className="w-5 h-5 text-cyan-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <span className="material-symbols-outlined text-[20px] text-secondary-container absolute left-4 top-1/2 -translate-y-1/2">
+              search
+            </span>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by keywords (e.g. 'SaaS', 'NVIDIA', 'DCF', 'Candlestick')..."
-              className="w-full pl-12 pr-28 py-3.5 bg-slate-900/90 border border-cyan-500/30 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(34,211,238,0.25)] transition-all"
+              placeholder="Search keywords (e.g. 'Unit Economics', 'Order Flow', 'DCF', 'Microstructure')..."
+              className="w-full pl-12 pr-32 py-4 bg-primary-container border border-surface-container-lowest/15 rounded-2xl text-surface-container-lowest placeholder:text-on-primary-container/40 focus:outline-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container/30 shadow-xl transition-all font-body-sm"
             />
             <button
               type="submit"
-              className="btn-chrome absolute right-2.5 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg text-xs font-semibold"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-xl font-label-md text-label-md uppercase tracking-wider bg-secondary-container text-on-secondary-container font-bold hover:brightness-110 transition-all cursor-pointer shadow-md"
             >
               Search
             </button>
@@ -122,7 +111,7 @@ export default function SearchPage() {
         </form>
 
         {/* Faceted Filter Bar */}
-        <div className="bg-[#080d1c] p-4 rounded-xl border border-slate-800 mb-10 flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-primary-container/90 p-4 rounded-2xl border border-surface-container-lowest/15 mb-10 flex flex-wrap items-center justify-between gap-4 shadow-xl">
           <div className="flex flex-wrap items-center gap-3">
             {/* Category select */}
             <select
@@ -131,7 +120,7 @@ export default function SearchPage() {
                 setCategory(e.target.value);
                 setPage(1);
               }}
-              className="bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300 px-3 py-2 focus:outline-none focus:border-cyan-400"
+              className="bg-tertiary-container border border-surface-container-lowest/15 rounded-xl text-xs font-label-sm uppercase tracking-wider text-surface-container-lowest px-3 py-2.5 focus:outline-none focus:border-secondary-container cursor-pointer"
             >
               <option value="">All Categories</option>
               {categories.map((cat) => (
@@ -148,7 +137,7 @@ export default function SearchPage() {
                 setContentType(e.target.value);
                 setPage(1);
               }}
-              className="bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300 px-3 py-2 focus:outline-none focus:border-cyan-400"
+              className="bg-tertiary-container border border-surface-container-lowest/15 rounded-xl text-xs font-label-sm uppercase tracking-wider text-surface-container-lowest px-3 py-2.5 focus:outline-none focus:border-secondary-container cursor-pointer"
             >
               <option value="">All Content Formats</option>
               <option value="article">Written Article</option>
@@ -167,7 +156,7 @@ export default function SearchPage() {
                 setSortBy(e.target.value);
                 setPage(1);
               }}
-              className="bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300 px-3 py-2 focus:outline-none focus:border-cyan-400"
+              className="bg-tertiary-container border border-surface-container-lowest/15 rounded-xl text-xs font-label-sm uppercase tracking-wider text-surface-container-lowest px-3 py-2.5 focus:outline-none focus:border-secondary-container cursor-pointer"
             >
               <option value="popular">Most Popular</option>
               <option value="newest">Recently Published</option>
@@ -177,15 +166,16 @@ export default function SearchPage() {
             {(query || category || contentType) && (
               <button
                 onClick={clearFilters}
-                className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1"
+                className="flex items-center gap-1 text-xs font-mono text-secondary-container hover:underline px-2 py-1 uppercase tracking-wider cursor-pointer"
               >
-                <X className="w-3.5 h-3.5" /> Clear filters
+                <span className="material-symbols-outlined text-[14px]">close</span>
+                Clear filters
               </button>
             )}
           </div>
 
-          <div className="text-xs font-mono text-slate-400">
-            Found <span className="text-cyan-300 font-bold">{total}</span> matching items
+          <div className="text-xs font-mono text-on-primary-container">
+            Found <span className="text-secondary-container font-bold">{total}</span> matching dossiers
           </div>
         </div>
 
@@ -193,44 +183,47 @@ export default function SearchPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-60 rounded-xl bg-slate-900/40 animate-pulse border border-slate-800" />
+              <div
+                key={i}
+                className="h-60 rounded-2xl bg-primary-container/40 animate-pulse border border-surface-container-lowest/10"
+              />
             ))}
           </div>
         ) : results.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {results.map((item, idx) => (
+              {results.map((item) => (
                 <Link key={item._id} href={`/content/${item.slug}`} className="group flex">
-                  <Card stepNumber={`0${idx + 1}.`} className="w-full">
+                  <div className="w-full bg-primary-container/85 border border-surface-container-lowest/10 hover:border-secondary-container/40 rounded-2xl p-6 flex flex-col justify-between shadow-xl hover:shadow-2xl transition-all duration-300">
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono uppercase font-semibold bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
-                          {item.contentType.replace('_', ' ')}
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-secondary-container/10 border border-secondary-container/30 text-secondary-container">
+                          {item.contentType.replace('_', ' ').toUpperCase()}
                         </span>
-                        <span className="text-[11px] font-mono text-slate-500">
+                        <span className="text-[11px] font-mono text-on-primary-container">
                           {item.category?.name}
                         </span>
                       </div>
 
-                      <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2 leading-snug mb-2">
+                      <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest group-hover:text-secondary-container transition-colors line-clamp-2 leading-snug mb-2">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-4">
+                      <p className="font-body-sm text-body-sm text-on-primary-container line-clamp-3 leading-relaxed mb-4">
                         {item.description}
                       </p>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                    <div className="pt-4 border-t border-surface-container-lowest/10 flex items-center justify-between text-[11px] text-on-primary-container font-mono">
                       <div className="flex items-center gap-1.5">
-                        <Clock className="w-3 h-3 text-cyan-400/80" />
-                        <span>{item.readTimeMinutes} min</span>
+                        <span className="material-symbols-outlined text-[14px]">schedule</span>
+                        <span>{item.readTimeMinutes || 10} min read</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Eye className="w-3 h-3 text-slate-500" />
-                        <span>{item.views} views</span>
+                        <span className="material-symbols-outlined text-[14px]">visibility</span>
+                        <span>{item.views || 180} views</span>
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -240,18 +233,18 @@ export default function SearchPage() {
               <div className="flex items-center justify-center gap-2 mt-12">
                 <button
                   disabled={page <= 1}
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                  className="px-4 py-2 rounded-lg text-xs bg-slate-900 border border-slate-800 text-slate-300 disabled:opacity-40"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  className="px-4 py-2 rounded-xl text-xs font-label-md uppercase tracking-wider bg-primary-container border border-surface-container-lowest/15 text-surface-container-lowest disabled:opacity-30 cursor-pointer"
                 >
                   Previous
                 </button>
-                <span className="text-xs font-mono text-slate-400 px-3">
+                <span className="text-xs font-mono text-on-primary-container px-3">
                   Page {page} of {totalPages}
                 </span>
                 <button
                   disabled={page >= totalPages}
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                  className="px-4 py-2 rounded-lg text-xs bg-slate-900 border border-slate-800 text-slate-300 disabled:opacity-40"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  className="px-4 py-2 rounded-xl text-xs font-label-md uppercase tracking-wider bg-primary-container border border-surface-container-lowest/15 text-surface-container-lowest disabled:opacity-30 cursor-pointer"
                 >
                   Next
                 </button>
@@ -259,13 +252,19 @@ export default function SearchPage() {
             )}
           </>
         ) : (
-          <div className="text-center py-24 rounded-2xl border border-dashed border-slate-800 bg-slate-950/40">
-            <SearchIcon className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <p className="text-sm font-medium text-slate-300">No content matches your search query</p>
-            <p className="text-xs text-slate-500 mt-1">Try broadening your keywords or resetting filters.</p>
+          <div className="text-center py-24 rounded-2xl border border-dashed border-surface-container-lowest/15 bg-primary-container/40">
+            <span className="material-symbols-outlined text-[48px] text-on-primary-container mx-auto mb-3 block">
+              search_off
+            </span>
+            <p className="font-headline-sm text-headline-sm text-surface-container-lowest">
+              No dossiers match your search query.
+            </p>
+            <p className="font-body-sm text-body-sm text-on-primary-container mt-1">
+              Try broadening your keywords or resetting search filters.
+            </p>
             <button
               onClick={clearFilters}
-              className="mt-4 px-4 py-2 rounded-lg text-xs font-mono text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/10"
+              className="mt-4 px-5 py-2.5 rounded-xl text-xs font-label-md uppercase tracking-wider text-secondary-container border border-secondary-container/30 hover:bg-secondary-container/10 transition-colors cursor-pointer"
             >
               Reset Search Filters
             </button>

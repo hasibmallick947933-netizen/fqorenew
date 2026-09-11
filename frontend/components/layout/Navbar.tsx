@@ -4,22 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/authContext';
-import {
-  Search,
-  Menu,
-  X,
-  ChevronDown,
-  ArrowUpRight,
-  Shield,
-  Bookmark,
-  LogOut,
-  Layers,
-  TrendingUp,
-  BarChart3,
-  PieChart,
-  BookOpen,
-  Briefcase,
-} from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -31,7 +15,7 @@ export const Navbar: React.FC = () => {
   const coursesRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdowns when clicking outside
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (coursesRef.current && !coursesRef.current.contains(e.target as Node)) {
@@ -45,42 +29,42 @@ export const Navbar: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const courseCategories = [
+  const courseModules = [
     {
-      name: 'Business Models',
-      desc: 'Unit economics, SaaS margins, corporate moats',
+      title: 'Unit Economics & Moats',
+      desc: 'Recurring revenue engines, CAC payback, cohort retention models.',
       href: '/business',
-      icon: Briefcase,
+      moduleNum: 'Module 01',
     },
     {
-      name: 'Stock Market',
-      desc: 'Microstructure, order flow, liquidity pools',
+      title: 'Order Flow & Microstructure',
+      desc: 'Institutional block prints, dark pools, volume profile auction mechanics.',
       href: '/stock-market',
-      icon: TrendingUp,
+      moduleNum: 'Module 02',
     },
     {
-      name: 'Companies',
-      desc: 'Corporate teardowns & revenue autopsies',
+      title: 'Corporate Teardowns',
+      desc: 'Off-balance sheet debt, revenue recognition forensics, cash burn autopsies.',
       href: '/companies',
-      icon: BarChart3,
+      moduleNum: 'Module 03',
     },
     {
-      name: 'Investing & DCF',
-      desc: 'Valuation frameworks & sensitivity models',
+      title: 'DCF & Sensitivity Models',
+      desc: 'Unlevered free cash flow, WACC derivation, terminal multiple stress tests.',
       href: '/investing',
-      icon: PieChart,
+      moduleNum: 'Module 04',
     },
     {
-      name: 'Trading Systems',
-      desc: 'Execution mechanics & algorithmic setups',
+      title: 'Execution Mechanics',
+      desc: 'Systematic trade protocols, Kelly criterion sizing, algorithmic setups.',
       href: '/trading',
-      icon: Layers,
+      moduleNum: 'Module 05',
     },
     {
-      name: 'Case Studies',
-      desc: 'Forensic accounting & market autopsies',
+      title: 'Forensic Accounting Autopsies',
+      desc: 'Beneish M-score fraud detection, short-seller reports, liquidity collapses.',
       href: '/case-studies',
-      icon: BookOpen,
+      moduleNum: 'Module 06',
     },
   ];
 
@@ -89,345 +73,355 @@ export const Navbar: React.FC = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[#040711]/85 backdrop-blur-xl border-b border-white/10 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Left Brand: FQore Logo Emblem matching page.jpeg */}
-          <Link href="/" className="flex items-center gap-2.5 group select-none">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 p-[1px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-              <div className="w-full h-full rounded-xl bg-[#080b14] flex items-center justify-center font-black text-amber-400 text-xs tracking-tighter">
-                FQ
-              </div>
+    <header className="sticky top-0 z-50 bg-primary-container/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(13,28,50,0.25)] border-b border-surface-container-lowest/10 transition-colors">
+      <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop h-20 flex items-center justify-between gap-space-md">
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center gap-3 shrink-0 group select-none">
+          <div className="w-9 h-9 rounded-lg bg-[#060d19] border border-surface-container-lowest/20 flex items-center justify-center p-1 shadow-md">
+            <div className="flex items-center gap-0.5">
+              <div className="w-1.5 h-5 bg-emerald-500 rounded-sm"></div>
+              <div className="w-1.5 h-3.5 bg-red-500 rounded-sm"></div>
             </div>
-            <div className="flex flex-col">
-              <span className="font-sans font-black text-lg tracking-tight text-white group-hover:text-amber-400 transition-colors uppercase">
-                FQ<span className="text-amber-400">ore</span>
-              </span>
-              <span className="text-[8px] font-mono tracking-widest text-slate-400 uppercase -mt-1 hidden sm:block">
-                Core of Solutions
-              </span>
-            </div>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight group-hover:text-secondary-container transition-colors leading-none">
+              FQ<span className="text-secondary-container font-semibold">ore</span>
+            </span>
+            <span className="text-[9px] font-mono tracking-widest text-on-primary-container uppercase mt-0.5 hidden sm:block">
+              Core of Solutions
+            </span>
+          </div>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden xl:flex items-center gap-space-lg">
+          <Link
+            href="/about"
+            className={`font-label-md text-label-md uppercase tracking-wider transition-colors ${
+              pathname === '/about'
+                ? 'text-secondary-container font-semibold'
+                : 'text-on-primary-container hover:text-surface-container-lowest'
+            }`}
+          >
+            ABOUT US
           </Link>
 
-          {/* Center Navigation Links: matching video frame_005.jpg & frame_020.jpg */}
-          <nav className="hidden md:flex items-center gap-2 lg:gap-4">
-            {/* [ About Us ] framed in wireframe box */}
-            <Link
-              href="/about"
-              className={`px-3.5 py-1.5 rounded border text-xs font-mono uppercase tracking-wider transition-all ${
-                pathname === '/about'
-                  ? 'border-cyan-400 text-cyan-300 bg-cyan-500/10 shadow-[0_0_15px_rgba(34,211,238,0.25)]'
-                  : 'border-white/35 text-white hover:border-cyan-400 hover:text-cyan-300 hover:bg-white/5'
+          <Link
+            href="/#curriculum-breakdown"
+            className="text-on-primary-container hover:text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider transition-colors"
+          >
+            HOW IT WORKS
+          </Link>
+
+          {/* Courses Mega Dropdown */}
+          <div
+            ref={coursesRef}
+            className="relative py-space-sm"
+            onMouseEnter={() => setCoursesDropdownOpen(true)}
+            onMouseLeave={() => setCoursesDropdownOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
+              className={`flex items-center gap-space-xs font-label-md text-label-md uppercase tracking-wider transition-colors ${
+                coursesDropdownOpen || courseModules.some((c) => pathname.startsWith(c.href))
+                  ? 'text-secondary-container font-semibold'
+                  : 'text-on-primary-container hover:text-surface-container-lowest'
               }`}
             >
-              About Us
-            </Link>
-
-            {/* How It Works */}
-            <Link
-              href="/#how-it-works"
-              className="px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-colors"
-            >
-              How It Works
-            </Link>
-
-            {/* Courses Dropdown */}
-            <div
-              ref={coursesRef}
-              className="relative"
-              onMouseEnter={() => setCoursesDropdownOpen(true)}
-              onMouseLeave={() => setCoursesDropdownOpen(false)}
-            >
-              <button
-                onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
-                  coursesDropdownOpen || courseCategories.some((c) => pathname.startsWith(c.href))
-                    ? 'text-cyan-300 font-semibold'
-                    : 'text-slate-300 hover:text-white'
+              <span>COURSES</span>
+              <span
+                className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
+                  coursesDropdownOpen ? 'rotate-180 text-secondary-container' : ''
                 }`}
               >
-                Courses
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    coursesDropdownOpen ? 'rotate-180 text-cyan-400' : ''
-                  }`}
-                />
-              </button>
+                expand_more
+              </span>
+            </button>
 
-              {/* Dropdown Menu */}
-              {coursesDropdownOpen && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-80 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                  <div className="rounded-xl bg-[#080d1d]/95 backdrop-blur-2xl border border-cyan-500/30 p-2 shadow-2xl space-y-1">
-                    <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-400 border-b border-slate-800">
-                      Educational Curriculum
-                    </div>
-                    {courseCategories.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = pathname.startsWith(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setCoursesDropdownOpen(false)}
-                          className={`flex items-start gap-3 p-2.5 rounded-lg transition-colors ${
-                            isActive
-                              ? 'bg-cyan-500/15 border border-cyan-500/30 text-white'
-                              : 'hover:bg-slate-800/60 text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          <div className="p-1.5 rounded-md bg-slate-900 border border-slate-800 text-cyan-400 shrink-0">
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <p className="text-xs font-semibold text-white">{item.name}</p>
-                            <p className="text-[11px] text-slate-400 leading-tight mt-0.5 font-light">
-                              {item.desc}
-                            </p>
-                          </div>
-                        </Link>
-                      );
-                    })}
+            {/* Dropdown Menu */}
+            {coursesDropdownOpen && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-[700px] pt-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="bg-tertiary-container/95 backdrop-blur-2xl rounded-2xl p-space-lg shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-surface-container-lowest/15">
+                  <div className="flex items-center justify-between pb-space-sm mb-space-md border-b border-surface-container-lowest/10">
+                    <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary-container">
+                      EDUCATIONAL CURRICULUM
+                    </span>
+                    <span className="font-label-sm text-label-sm uppercase text-on-tertiary-container tracking-wider">
+                      6 Core Institutional Syllabi
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-x-space-lg gap-y-space-md">
+                    {courseModules.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setCoursesDropdownOpen(false)}
+                        className={`group/item flex flex-col p-3 rounded-xl transition-all ${
+                          pathname.startsWith(item.href)
+                            ? 'bg-surface-container-lowest/10 border border-secondary-container/30'
+                            : 'hover:bg-surface-container-lowest/5'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-title-md text-title-md text-surface-container-lowest group-hover/item:text-secondary-container transition-colors">
+                            {item.title}
+                          </span>
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-container-lowest/10 text-secondary-container">
+                            {item.moduleNum}
+                          </span>
+                        </div>
+                        <span className="font-body-sm text-body-sm text-on-tertiary-container line-clamp-2">
+                          {item.desc}
+                        </span>
+                      </Link>
+                    ))}
                   </div>
                 </div>
-              )}
-            </div>
-
-            {/* Business PDFs / Resources */}
-            <Link
-              href="/resources"
-              className={`px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
-                pathname === '/resources' ? 'text-cyan-300 font-semibold' : 'text-slate-300 hover:text-white'
-              }`}
-            >
-              Business PDFs
-            </Link>
-
-            {/* Pricing */}
-            <Link
-              href="/pricing"
-              className={`px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors flex items-center gap-1.5 ${
-                pathname === '/pricing' ? 'text-cyan-300 font-semibold' : 'text-slate-300 hover:text-white'
-              }`}
-            >
-              Pricing
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono">
-                ₹59+
-              </span>
-            </Link>
-          </nav>
-
-          {/* Right Action Icons & Buttons: matching video frame_005.jpg */}
-          <div className="hidden sm:flex items-center gap-3">
-            {/* Minimal Search Button */}
-            <Link
-              href="/search"
-              aria-label="Global Search"
-              className="p-2 text-slate-400 hover:text-cyan-300 hover:bg-slate-900/60 rounded-lg transition-colors"
-            >
-              <Search className="w-4 h-4" />
-            </Link>
-
-            {/* User Dropdown / Login */}
-            {user ? (
-              <div ref={userRef} className="relative">
-                <button
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-900/80 border border-cyan-500/30 text-xs text-slate-200 hover:border-cyan-400 transition-all font-mono"
-                >
-                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[10px]">
-                    {user.name.charAt(0)}
-                  </div>
-                  <span className="max-w-[90px] truncate">{user.name.split(' ')[0]}</span>
-                  {isAdmin && (
-                    <span className="text-[9px] bg-cyan-500/20 text-cyan-300 px-1 py-0.5 rounded uppercase font-mono font-bold">
-                      Admin
-                    </span>
-                  )}
-                  <ChevronDown className="w-3 h-3 text-slate-400" />
-                </button>
-
-                {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-52 rounded-xl bg-[#090e1d] border border-cyan-500/30 shadow-2xl py-2 z-50 backdrop-blur-xl">
-                    <div className="px-4 py-2 border-b border-slate-800/60">
-                      <p className="text-xs font-semibold text-white truncate">{user.name}</p>
-                      <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
-                    </div>
-
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-xs text-cyan-300 hover:bg-cyan-500/10 transition-colors"
-                      >
-                        <Shield className="w-3.5 h-3.5" />
-                        Admin CMS Suite
-                      </Link>
-                    )}
-
-                    <Link
-                      href="/bookmarks"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 px-4 py-2 text-xs text-slate-300 hover:bg-slate-800/60 transition-colors"
-                    >
-                      <Bookmark className="w-3.5 h-3.5 text-cyan-400" />
-                      Saved & Bookmarks
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        setUserDropdownOpen(false);
-                        logout();
-                      }}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-400 hover:bg-red-500/10 transition-colors text-left"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-colors"
-              >
-                Log In
-              </Link>
             )}
-
-            {/* [ Contact Us ↗ ] signature wireframe button matching frame_005.jpg */}
-            <Link
-              href="/contact"
-              className="px-3.5 py-1.5 rounded border border-white/40 text-white hover:border-cyan-400 hover:text-cyan-300 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 transition-all hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] bg-black/40"
-            >
-              Contact Us
-              <ArrowUpRight className="w-3.5 h-3.5 text-cyan-400" />
-            </Link>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
-          <div className="flex md:hidden items-center gap-2">
-            <Link href="/search" className="p-2 text-slate-400">
-              <Search className="w-5 h-5" />
-            </Link>
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-300 hover:text-white"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
+          <Link
+            href="/resources"
+            className={`font-label-md text-label-md uppercase tracking-wider transition-colors ${
+              pathname === '/resources'
+                ? 'text-secondary-container font-semibold'
+                : 'text-on-primary-container hover:text-surface-container-lowest'
+            }`}
+          >
+            BUSINESS PDFS
+          </Link>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-800/80 py-4 space-y-2">
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2 text-sm font-mono uppercase text-white hover:text-cyan-300"
-            >
-              [ About Us ]
-            </Link>
-            <Link
-              href="/#how-it-works"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2 text-sm font-mono uppercase text-slate-300 hover:text-white"
-            >
-              How It Works
-            </Link>
+          <Link
+            href="/pricing"
+            className={`font-label-md text-label-md uppercase tracking-wider transition-colors flex items-center gap-1.5 ${
+              pathname === '/pricing'
+                ? 'text-secondary-container font-semibold'
+                : 'text-on-primary-container hover:text-surface-container-lowest'
+            }`}
+          >
+            <span>PRICING</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-secondary-container/20 text-secondary-container border border-secondary-container/30">
+              ₹59+
+            </span>
+          </Link>
+        </nav>
 
-            <div className="px-4 py-1 text-[11px] font-mono uppercase text-cyan-400 tracking-wider">
-              Courses & Disciplines
-            </div>
-            {courseCategories.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block pl-7 pr-4 py-1.5 text-xs text-slate-300 hover:text-white"
+        {/* Right Action Utilities */}
+        <div className="flex items-center gap-space-md shrink-0">
+          <Link
+            href="/search"
+            aria-label="Search Catalog"
+            className="p-space-xs text-on-primary-container hover:text-surface-container-lowest transition-colors flex items-center justify-center"
+          >
+            <span className="material-symbols-outlined text-[20px]">search</span>
+          </Link>
+
+          {/* User Dropdown or Log In */}
+          {user ? (
+            <div ref={userRef} className="relative">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-tertiary-container border border-surface-container-lowest/15 text-xs text-surface-container-lowest hover:border-secondary-container/50 transition-all font-mono"
               >
-                • {item.name}
-              </Link>
-            ))}
+                <div className="w-6 h-6 rounded-full bg-secondary-container/20 text-secondary-container flex items-center justify-center font-bold text-[11px]">
+                  {user.name.charAt(0)}
+                </div>
+                <span className="max-w-[90px] truncate">{user.name.split(' ')[0]}</span>
+                <span className="material-symbols-outlined text-[16px] text-on-primary-container">
+                  expand_more
+                </span>
+              </button>
 
-            <Link
-              href="/resources"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2 text-sm font-mono uppercase text-slate-300 hover:text-white"
-            >
-              Business PDFs
-            </Link>
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 rounded-xl bg-tertiary-container border border-surface-container-lowest/15 shadow-2xl py-2 z-50 backdrop-blur-xl">
+                  <div className="px-4 py-2 border-b border-surface-container-lowest/10">
+                    <p className="text-xs font-semibold text-surface-container-lowest truncate">
+                      {user.name}
+                    </p>
+                    <p className="text-[11px] text-on-primary-container truncate">{user.email}</p>
+                  </div>
 
-            <Link
-              href="/pricing"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2 text-sm font-mono uppercase text-cyan-300 hover:text-cyan-200"
-            >
-              Pricing (₹59+)
-            </Link>
-
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-2 text-sm font-mono uppercase text-white hover:text-cyan-300"
-            >
-              [ Contact Us ↗ ]
-            </Link>
-
-            <div className="pt-4 border-t border-slate-800 flex flex-col gap-2 px-4">
-              {user ? (
-                <>
                   {isAdmin && (
                     <Link
                       href="/admin"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2 py-2 text-sm text-cyan-300 font-semibold"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 px-4 py-2 text-xs text-secondary-container hover:bg-surface-container-lowest/5 transition-colors"
                     >
-                      <Shield className="w-4 h-4" /> Admin CMS
+                      <span className="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+                      Admin CMS Suite
                     </Link>
                   )}
+
                   <Link
                     href="/bookmarks"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 py-2 text-sm text-slate-300"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2 text-xs text-surface-container-lowest hover:bg-surface-container-lowest/5 transition-colors"
                   >
-                    <Bookmark className="w-4 h-4 text-cyan-400" /> Saved Content
+                    <span className="material-symbols-outlined text-[16px]">bookmark</span>
+                    Saved Dossiers
                   </Link>
+
                   <button
                     onClick={() => {
+                      setUserDropdownOpen(false);
                       logout();
-                      setMobileMenuOpen(false);
                     }}
-                    className="flex items-center gap-2 py-2 text-sm text-red-400 text-left"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-xs text-red-400 hover:bg-red-500/10 transition-colors text-left"
                   >
-                    <LogOut className="w-4 h-4" /> Sign Out
+                    <span className="material-symbols-outlined text-[16px]">logout</span>
+                    Sign Out
                   </button>
-                </>
-              ) : (
-                <div className="flex gap-2 pt-2">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-1/2 text-center py-2 text-xs font-mono uppercase border border-white/30 rounded text-white"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    href="/contact"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-1/2 text-center py-2 text-xs font-mono uppercase border border-cyan-400 text-cyan-300 rounded"
-                  >
-                    Contact ↗
-                  </Link>
                 </div>
               )}
             </div>
-          </div>
-        )}
+          ) : (
+            <Link
+              href="/login"
+              className="hidden sm:inline-flex text-on-primary-container hover:text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider transition-colors"
+            >
+              LOG IN
+            </Link>
+          )}
+
+          {/* Contact Us CTA Button */}
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md uppercase tracking-wider text-secondary-container hover:bg-secondary-container/10 transition-colors border border-secondary-container/30 hover:border-secondary-container"
+          >
+            <span className="font-label-md text-label-md">CONTACT US</span>
+            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </Link>
+
+          {/* Admin quick icon */}
+          <Link
+            href="/admin"
+            className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 hover:ring-2 hover:ring-secondary-container transition-all"
+            title="Admin Portal"
+          >
+            <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
+          </Link>
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="xl:hidden p-2 text-on-primary-container hover:text-surface-container-lowest"
+            aria-label="Toggle navigation menu"
+          >
+            <span className="material-symbols-outlined text-[24px]">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-primary-container/98 border-t border-surface-container-lowest/10 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-2">
+          <Link
+            href="/about"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-label-md uppercase tracking-wider text-surface-container-lowest hover:text-secondary-container"
+          >
+            About Us
+          </Link>
+          <Link
+            href="/#curriculum-breakdown"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-label-md uppercase tracking-wider text-on-primary-container hover:text-surface-container-lowest"
+          >
+            How It Works
+          </Link>
+
+          <div className="pt-2 border-t border-surface-container-lowest/10">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-secondary-container block mb-2">
+              Courses & Syllabi
+            </span>
+            <div className="space-y-2 pl-2">
+              {courseModules.map((c) => (
+                <Link
+                  key={c.href}
+                  href={c.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-1 text-xs text-on-primary-container hover:text-surface-container-lowest"
+                >
+                  &bull; {c.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <Link
+            href="/resources"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-label-md uppercase tracking-wider text-on-primary-container hover:text-surface-container-lowest"
+          >
+            Business PDFs
+          </Link>
+
+          <Link
+            href="/pricing"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-label-md uppercase tracking-wider text-secondary-container"
+          >
+            Pricing (₹59+)
+          </Link>
+
+          <Link
+            href="/contact"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-label-md uppercase tracking-wider text-secondary-container"
+          >
+            Contact Us &rarr;
+          </Link>
+
+          <div className="pt-4 border-t border-surface-container-lowest/10 flex flex-col gap-2">
+            {user ? (
+              <>
+                <div className="text-xs text-on-primary-container">Signed in as {user.name}</div>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="py-1.5 text-xs text-secondary-container flex items-center gap-1.5"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+                    Admin CMS Suite
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="py-1.5 text-xs text-red-400 text-left"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <div className="flex gap-3 pt-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-1/2 text-center py-2.5 text-xs font-label-md uppercase tracking-wider border border-surface-container-lowest/20 rounded-xl text-surface-container-lowest"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-1/2 text-center py-2.5 text-xs font-label-md uppercase tracking-wider bg-secondary-container text-on-secondary-container rounded-xl font-bold"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };
-

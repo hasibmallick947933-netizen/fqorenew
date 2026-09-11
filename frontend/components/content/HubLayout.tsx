@@ -3,8 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Content } from '@/lib/types';
-import { Card } from '@/components/ui/Card';
-import { Search, Clock, Eye, Sparkles, BookOpen, Video, FileSpreadsheet, FileText, ArrowUpRight } from 'lucide-react';
 
 interface HubLayoutProps {
   title: string;
@@ -13,16 +11,6 @@ interface HubLayoutProps {
   subcategories: string[];
   initialContent: Content[];
 }
-
-const typeIconMap: Record<string, any> = {
-  article: BookOpen,
-  video: Video,
-  excel: FileSpreadsheet,
-  csv: FileSpreadsheet,
-  pdf: FileText,
-  case_study: FileText,
-  company_analysis: Sparkles,
-};
 
 export const HubLayout: React.FC<HubLayoutProps> = ({
   title,
@@ -46,32 +34,32 @@ export const HubLayout: React.FC<HubLayoutProps> = ({
   });
 
   return (
-    <div className="py-12 sm:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-16 sm:py-24 min-h-screen bg-[#040813] text-slate-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop">
         {/* Hub Header */}
         <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-xs font-mono uppercase text-cyan-300 mb-4">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container/10 border border-secondary-container/30 text-xs font-mono uppercase text-secondary-container mb-4 shadow-[0_0_15px_rgba(254,222,178,0.15)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse" />
             {badge}
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-4">
+          <h1 className="font-headline-lg text-headline-lg sm:text-display-lg text-surface-container-lowest tracking-tight mb-4">
             {title}
           </h1>
-          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+          <p className="font-body-lg text-body-lg text-on-primary-container leading-relaxed font-light">
             {description}
           </p>
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-8 mb-10 border-b border-slate-800">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-6 mb-10 border-b border-surface-container-lowest/10">
           {/* Subcategory Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
             <button
               onClick={() => setSelectedSubcat('all')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all shrink-0 ${
+              className={`px-4 py-2 rounded-xl text-xs font-label-md uppercase tracking-wider transition-all shrink-0 ${
                 selectedSubcat === 'all'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
-                  : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-secondary-container text-on-secondary-container font-bold shadow-md'
+                  : 'bg-primary-container border border-surface-container-lowest/15 text-on-primary-container hover:text-surface-container-lowest'
               }`}
             >
               All Topics
@@ -80,10 +68,10 @@ export const HubLayout: React.FC<HubLayoutProps> = ({
               <button
                 key={subcat}
                 onClick={() => setSelectedSubcat(subcat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all shrink-0 ${
+                className={`px-4 py-2 rounded-xl text-xs font-label-md uppercase tracking-wider transition-all shrink-0 ${
                   selectedSubcat.toLowerCase() === subcat.toLowerCase()
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
-                    : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                    ? 'bg-secondary-container text-on-secondary-container font-bold shadow-md'
+                    : 'bg-primary-container border border-surface-container-lowest/15 text-on-primary-container hover:text-surface-container-lowest'
                 }`}
               >
                 {subcat}
@@ -93,13 +81,15 @@ export const HubLayout: React.FC<HubLayoutProps> = ({
 
           {/* Quick Search */}
           <div className="relative w-full md:w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <span className="material-symbols-outlined text-[18px] text-on-primary-container absolute left-3.5 top-1/2 -translate-y-1/2">
+              search
+            </span>
             <input
               type="text"
               placeholder="Search track..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-900 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-cyan-400 transition-colors"
+              className="w-full pl-10 pr-4 py-2 text-xs bg-primary-container border border-surface-container-lowest/15 rounded-xl text-surface-container-lowest placeholder:text-on-primary-container/40 focus:outline-none focus:border-secondary-container font-body-sm"
             />
           </div>
         </div>
@@ -107,48 +97,50 @@ export const HubLayout: React.FC<HubLayoutProps> = ({
         {/* Content Grid */}
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((item, idx) => {
-              const Icon = typeIconMap[item.contentType] || BookOpen;
-              return (
-                <Link key={item._id} href={`/content/${item.slug}`} className="group flex">
-                  <Card stepNumber={`0${idx + 1}.`} className="w-full">
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono uppercase font-semibold bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
-                          <Icon className="w-3 h-3" />
-                          {item.contentType.replace('_', ' ')}
-                        </span>
-                        <span className="text-[11px] font-mono text-slate-500">
-                          {item.difficulty || 'Beginner'}
-                        </span>
-                      </div>
-
-                      <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2 leading-snug mb-2">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed mb-4">
-                        {item.description}
-                      </p>
+            {filtered.map((item, idx) => (
+              <Link key={item._id} href={`/content/${item.slug}`} className="group flex">
+                <div className="w-full bg-primary-container/85 border border-surface-container-lowest/10 hover:border-secondary-container/40 rounded-2xl p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:shadow-2xl transition-all duration-300 relative">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-secondary-container/10 border border-secondary-container/30 text-secondary-container">
+                        <span className="material-symbols-outlined text-[14px]">description</span>
+                        {item.contentType.replace('_', ' ').toUpperCase()}
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface-container-lowest/5 text-on-primary-container uppercase">
+                        {item.difficulty || 'Institutional'}
+                      </span>
                     </div>
 
-                    <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3 h-3 text-cyan-400/80" />
-                        <span>{item.readTimeMinutes} min</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Eye className="w-3 h-3 text-slate-500" />
-                        <span>{item.views} views</span>
-                      </div>
+                    <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest group-hover:text-secondary-container transition-colors line-clamp-2 leading-snug mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="font-body-sm text-body-sm text-on-primary-container line-clamp-3 leading-relaxed mb-6">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-surface-container-lowest/10 flex items-center justify-between text-[11px] text-on-primary-container font-mono">
+                    <div className="flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[14px]">schedule</span>
+                      <span>{item.readTimeMinutes || 12} min read</span>
                     </div>
-                  </Card>
-                </Link>
-              );
-            })}
+                    <div className="flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[14px]">visibility</span>
+                      <span>{item.views || 240} views</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         ) : (
-          <div className="text-center py-20 rounded-2xl border border-dashed border-slate-800 bg-slate-950/40">
-            <p className="text-sm text-slate-400">No educational modules match your current filters.</p>
+          <div className="text-center py-20 rounded-2xl border border-dashed border-surface-container-lowest/15 bg-primary-container/40">
+            <span className="material-symbols-outlined text-[48px] text-on-primary-container mx-auto mb-3 block">
+              menu_book
+            </span>
+            <p className="font-headline-sm text-headline-sm text-surface-container-lowest font-medium">
+              No educational modules match your current filters.
+            </p>
           </div>
         )}
       </div>

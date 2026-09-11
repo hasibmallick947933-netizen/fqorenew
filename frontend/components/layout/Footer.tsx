@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, ArrowUpRight } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const pathname = usePathname();
@@ -23,148 +22,154 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-black text-slate-400 border-t border-white/10 relative overflow-hidden select-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-900">
+    <footer className="w-full bg-[#070e1a] text-on-primary-container border-t border-surface-container-lowest/10 relative overflow-hidden select-none">
+      <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop pt-16 pb-12 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-surface-container-lowest/10">
           {/* Brand & Movement Slogan */}
           <div className="lg:col-span-6 space-y-4">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center p-[1px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-                <div className="w-full h-full bg-[#080b14] rounded-xl flex items-center justify-center font-black text-amber-400 text-xs">
-                  FQ
+              <div className="w-8 h-8 rounded-lg bg-[#060d19] border border-surface-container-lowest/20 flex items-center justify-center p-1 shadow-md">
+                <div className="flex items-center gap-0.5">
+                  <div className="w-1.5 h-5 bg-emerald-500 rounded-sm"></div>
+                  <div className="w-1.5 h-3.5 bg-red-500 rounded-sm"></div>
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tight text-white uppercase group-hover:text-amber-400 transition-colors">
-                  FQ<span className="text-amber-400">ore</span>
+                <span className="font-headline-sm text-headline-sm text-surface-container-lowest uppercase tracking-tight group-hover:text-secondary-container transition-colors">
+                  FQ<span className="text-secondary-container font-semibold">ore</span>
                 </span>
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase -mt-1">
+                <span className="text-[9px] font-mono tracking-widest text-on-primary-container uppercase -mt-1">
                   Core of Solutions
                 </span>
               </div>
             </Link>
 
-            <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white max-w-md leading-tight pt-2">
-              BUILD YOUR <span className="text-amber-400">BETTER FUTURE</span>
+            <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest max-w-md pt-2">
+              BUILD YOUR <span className="text-secondary-container">INSTITUTIONAL EDGE</span>
             </h3>
-            <p className="text-xs text-slate-400 max-w-md font-light leading-relaxed">
-              Practical Knowledge &bull; Real Strategies &bull; Lasting Growth. Practical trading education, e-commerce startup scaling, downloadable PDF blueprints, and financial models.
+            <p className="font-body-sm text-body-sm text-on-primary-container max-w-md leading-relaxed">
+              Practical trading education, quantitative order flow mechanics, corporate revenue autopsies, downloadable Excel models, and forensic PDF dossiers.
             </p>
-            <p className="text-xs font-mono text-amber-400/90">
-              Admin & Inquiries: <a href="mailto:fqorein@gmail.com" className="underline hover:text-white">fqorein@gmail.com</a>
+            <p className="text-xs font-mono text-secondary-container">
+              Advisory Desk &amp; Inquiries:{' '}
+              <a href="mailto:fqorein@gmail.com" className="underline hover:text-surface-container-lowest">
+                fqorein@gmail.com
+              </a>
             </p>
           </div>
 
-          {/* Quick Links, Contact Us, Follow Us (matching frame_160.jpg) */}
+          {/* Quick Links, Contact, Syllabi */}
           <div className="lg:col-span-6 grid grid-cols-3 gap-6 text-xs">
             <div>
-              <h4 className="font-bold text-white uppercase tracking-wider mb-4 text-[11px] font-mono">
-                Quick Links
+              <h4 className="font-label-sm text-label-sm uppercase tracking-wider text-surface-container-lowest mb-4">
+                Curriculum
               </h4>
-              <ul className="space-y-2.5 font-light">
+              <ul className="space-y-2.5 font-body-sm text-on-primary-container">
                 <li>
-                  <Link href="/about" className="hover:text-cyan-300 transition-colors">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="hover:text-cyan-300 transition-colors">
-                    Pricing Plans
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/business" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/business" className="hover:text-secondary-container transition-colors">
                     Business Models
                   </Link>
                 </li>
                 <li>
-                  <Link href="/stock-market" className="hover:text-cyan-300 transition-colors">
-                    Stock Market
+                  <Link href="/stock-market" className="hover:text-secondary-container transition-colors">
+                    Order Flow &amp; Tape
                   </Link>
                 </li>
                 <li>
-                  <Link href="/resources" className="hover:text-cyan-300 transition-colors">
-                    Downloadables
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-white uppercase tracking-wider mb-4 text-[11px] font-mono">
-                Contact Us
-              </h4>
-              <ul className="space-y-2.5 font-light">
-                <li>
-                  <Link href="/contact" className="hover:text-cyan-300 transition-colors">
-                    Contact Advisory
+                  <Link href="/companies" className="hover:text-secondary-container transition-colors">
+                    Corporate Teardowns
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-cyan-300 transition-colors">
-                    FAQ
+                  <Link href="/investing" className="hover:text-secondary-container transition-colors">
+                    DCF Valuations
                   </Link>
                 </li>
                 <li>
-                  <Link href="/admin" className="hover:text-cyan-300 transition-colors">
-                    Admin CMS
+                  <Link href="/trading" className="hover:text-secondary-container transition-colors">
+                    Trading Systems
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold text-white uppercase tracking-wider mb-4 text-[11px] font-mono">
-                Follow Us
+              <h4 className="font-label-sm text-label-sm uppercase tracking-wider text-surface-container-lowest mb-4">
+                Institutional
               </h4>
-              <ul className="space-y-2.5 font-light">
+              <ul className="space-y-2.5 font-body-sm text-on-primary-container">
                 <li>
-                  <a href="#" className="hover:text-cyan-300 transition-colors">
-                    Instagram
-                  </a>
+                  <Link href="/pricing" className="hover:text-secondary-container transition-colors">
+                    Tiered Pricing (₹59+)
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-cyan-300 transition-colors">
-                    X.com
-                  </a>
+                  <Link href="/resources" className="hover:text-secondary-container transition-colors">
+                    Business PDFs &amp; Models
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-cyan-300 transition-colors">
-                    LinkedIn
-                  </a>
+                  <Link href="/about" className="hover:text-secondary-container transition-colors">
+                    Strategic Mandate
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-cyan-300 transition-colors">
-                    YouTube
-                  </a>
+                  <Link href="/contact" className="hover:text-secondary-container transition-colors">
+                    Advisory Desk
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/search" className="hover:text-secondary-container transition-colors">
+                    Search Repository
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-label-sm text-label-sm uppercase tracking-wider text-surface-container-lowest mb-4">
+                Security &amp; Portal
+              </h4>
+              <ul className="space-y-2.5 font-body-sm text-on-primary-container">
+                <li>
+                  <Link href="/login" className="hover:text-secondary-container transition-colors">
+                    Learner Portal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin" className="hover:text-secondary-container transition-colors">
+                    Admin CMS Suite
+                  </Link>
+                </li>
+                <li>
+                  <span className="text-[11px] font-mono text-emerald-400 block mt-2">
+                    &bull; 256-Bit SSL Secured
+                  </span>
+                </li>
+                <li>
+                  <span className="text-[11px] font-mono text-secondary-container block">
+                    &bull; Razorpay Verified
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* GIANT ARCHITECTURAL WATERMARK (matching frame_160.jpg "EDUXCHAIN" watermark) */}
-        <div className="w-full py-8 text-center select-none pointer-events-none overflow-hidden">
-          <div
-            className="text-7xl sm:text-9xl md:text-[13rem] lg:text-[16rem] font-black uppercase tracking-tight text-white leading-none opacity-[0.06] hover:opacity-10 transition-opacity"
-            style={{
-              letterSpacing: '0.04em',
-              WebkitTextStroke: '1px rgba(255, 255, 255, 0.15)',
-            }}
-          >
-            FQORE
-          </div>
-        </div>
-
-        {/* Bottom Legal & Copyright (matching frame_160.jpg) */}
-        <div className="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4 font-light">
-          <p>© {new Date().getFullYear()} FQore. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-slate-400 transition-colors">
-              Privacy Policy
+        {/* Bottom copyright line */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="font-body-sm text-body-sm text-on-primary-container">
+            &copy; {new Date().getFullYear()} FQore Executive Academy. All institutional rights reserved.
+          </p>
+          <div className="flex items-center gap-4 text-xs font-mono text-on-primary-container">
+            <span>Core of Solutions</span>
+            <span>&bull;</span>
+            <Link href="/about" className="hover:text-secondary-container transition-colors">
+              Terms &amp; Mandate
             </Link>
-            <Link href="/terms" className="hover:text-slate-400 transition-colors">
-              Terms of Service
+            <span>&bull;</span>
+            <Link href="/contact" className="hover:text-secondary-container transition-colors">
+              Advisory
             </Link>
           </div>
         </div>

@@ -4,18 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { Plan } from '@/lib/types';
 import { PaywallModal } from '@/components/ui/PaywallModal';
-import { Button } from '@/components/ui/Button';
-import {
-  Sparkles,
-  CheckCircle2,
-  ShieldCheck,
-  Zap,
-  DownloadCloud,
-  FileSpreadsheet,
-  Lock,
-  ArrowUpRight,
-} from 'lucide-react';
-
 import { DEFAULT_PLANS } from '@/lib/constants';
 
 export default function PricingPage() {
@@ -45,27 +33,30 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="py-16 sm:py-24 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="py-16 sm:py-24 min-h-screen bg-[#040813] text-slate-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop">
+        {/* Header matching Executive Academy */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-xs font-mono uppercase text-cyan-300 mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container/10 border border-secondary-container/30 text-xs font-mono uppercase text-secondary-container mb-4 shadow-[0_0_15px_rgba(254,222,178,0.15)]">
+            <span className="material-symbols-outlined text-[15px]">lock</span>
             Direct Razorpay Access
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-white mb-6">
+          <h1 className="font-headline-lg text-headline-lg sm:text-display-lg text-surface-container-lowest tracking-tight mb-4 uppercase">
             Institutional Intelligence Tiers
           </h1>
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-light">
-            Unlock verified business model breakdowns, downloadable forensic PDFs, and dynamic 3-statement Excel valuation sheets. Zero recurring subscription traps—pay once per tier.
+          <p className="font-body-lg text-body-lg text-on-primary-container leading-relaxed font-light">
+            Unlock verified business model breakdowns, downloadable forensic PDFs, and dynamic 3-statement Excel valuation sheets. Zero recurring subscription traps&mdash;pay once per tier.
           </p>
         </div>
 
-        {/* Pricing Cards */}
+        {/* Pricing Cards Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-96 rounded-3xl bg-slate-900/60 animate-pulse" />
+              <div
+                key={i}
+                className="h-96 rounded-3xl bg-primary-container/40 border border-surface-container-lowest/10 animate-pulse"
+              />
             ))}
           </div>
         ) : (
@@ -73,74 +64,94 @@ export default function PricingPage() {
             {plans.map((plan, idx) => (
               <div
                 key={plan._id}
-                className={`glass-panel rounded-3xl p-8 flex flex-col justify-between relative transition-all duration-300 hover:border-cyan-400/50 ${
+                className={`rounded-3xl p-8 sm:p-10 flex flex-col justify-between relative transition-all duration-300 backdrop-blur-xl ${
                   plan.popular
-                    ? 'border-cyan-400 bg-gradient-to-b from-cyan-950/30 via-slate-950/60 to-slate-950/80 shadow-[0_0_35px_rgba(34,211,238,0.2)]'
-                    : 'border-slate-800'
+                    ? 'bg-primary-container border-2 border-secondary-container shadow-[0_12px_40px_rgba(254,222,178,0.2)] md:-translate-y-2'
+                    : 'bg-primary-container/80 border border-surface-container-lowest/15 hover:border-secondary-container/40 shadow-xl'
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-cyan-400 text-slate-950 shadow-[0_0_15px_#22d3ee]">
-                    {plan.badge || 'Most Popular'}
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[11px] font-label-sm uppercase tracking-wider font-bold bg-secondary-container text-on-secondary-container shadow-md flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+                    <span>{plan.badge || 'Most Popular'}</span>
                   </div>
                 )}
 
                 <div>
-                  <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 font-bold block mb-2">
-                    Tier 0{idx + 1}
+                  <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary-container block mb-2">
+                    TIER 0{idx + 1}
                   </span>
-                  <h3 className="text-2xl font-black uppercase text-white mb-2">{plan.name}</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                  <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest mb-2 uppercase">
+                    {plan.name}
+                  </h3>
+                  <p className="font-body-sm text-body-sm text-on-primary-container leading-relaxed mb-6">
                     {plan.description}
                   </p>
 
-                  <div className="flex items-baseline gap-2 mb-8 pb-6 border-b border-slate-800">
-                    <span className="text-5xl font-black text-white font-mono">₹{plan.price}</span>
-                    <span className="text-xs text-slate-400 font-mono">/ one-time access</span>
+                  <div className="flex items-baseline gap-2 mb-8 pb-6 border-b border-surface-container-lowest/10">
+                    <span className="text-4xl sm:text-5xl font-bold font-headline-lg text-surface-container-lowest">
+                      ₹{plan.price}
+                    </span>
+                    <span className="text-xs font-mono text-on-primary-container">
+                      / one-time access
+                    </span>
                   </div>
 
                   <div className="space-y-3 mb-8">
-                    <span className="text-[11px] font-mono uppercase text-slate-400 font-semibold block mb-1">
+                    <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container block mb-2">
                       Included Assets:
                     </span>
                     {plan.features.map((feature, i) => (
-                      <div key={i} className="flex items-start gap-2.5 text-xs text-slate-300 leading-relaxed">
-                        <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                      <div
+                        key={i}
+                        className="flex items-start gap-2.5 font-body-sm text-body-sm text-surface-container-lowest leading-relaxed"
+                      >
+                        <span className="material-symbols-outlined text-[18px] text-emerald-400 shrink-0 mt-0.5">
+                          check_circle
+                        </span>
                         <span>{feature}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-slate-800">
-                  <Button
-                    variant={plan.popular ? 'chrome' : 'outline'}
-                    size="md"
-                    className="w-full"
+                <div className="pt-6 border-t border-surface-container-lowest/10">
+                  <button
                     onClick={() => handleSelectPlan(plan._id)}
-                    showArrow
+                    className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-label-md text-label-md uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer ${
+                      plan.popular
+                        ? 'bg-secondary-container text-on-secondary-container hover:brightness-110 shadow-[0_4px_20px_rgba(254,222,178,0.25)]'
+                        : 'bg-tertiary-container border border-surface-container-lowest/20 text-surface-container-lowest hover:border-secondary-container hover:bg-secondary-container/10'
+                    }`}
                   >
-                    Unlock Plan for ₹{plan.price}
-                  </Button>
+                    <span>Unlock Plan for ₹{plan.price}</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Razorpay Trust Badges */}
-        <div className="glass-panel p-8 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-around gap-6 text-center text-xs font-mono text-slate-400">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            <span>Razorpay Secure 256-Bit SSL</span>
+        {/* Security & Verification Badges */}
+        <div className="bg-primary-container/80 p-8 rounded-2xl border border-surface-container-lowest/15 flex flex-wrap items-center justify-around gap-6 text-center backdrop-blur-xl shadow-xl">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-emerald-400 text-[24px]">verified_user</span>
+            <span className="font-label-md text-label-md uppercase tracking-wider text-surface-container-lowest">
+              Razorpay Secure 256-Bit SSL
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-cyan-400" />
-            <span>Instant Digital Unlocking</span>
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-secondary-container text-[24px]">bolt</span>
+            <span className="font-label-md text-label-md uppercase tracking-wider text-surface-container-lowest">
+              Instant Cloud Unlocking
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <DownloadCloud className="w-5 h-5 text-blue-400" />
-            <span>Verified Macro-Free Downloads</span>
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-cyan-400 text-[24px]">download_for_offline</span>
+            <span className="font-label-md text-label-md uppercase tracking-wider text-surface-container-lowest">
+              Verified Macro-Free Downloads
+            </span>
           </div>
         </div>
       </div>
