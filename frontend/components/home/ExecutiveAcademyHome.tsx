@@ -141,9 +141,12 @@ export const ExecutiveAcademyHome: React.FC = () => {
   // Navigation & Dropdown State
   const [courseFlyoutOpen, setCourseFlyoutOpen] = useState(false);
   const [activeCourseTab, setActiveCourseTab] = useState('tab-business');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileCoursesOpen, setMobileCoursesOpen] = useState(false);
 
-  // Masterclass Video Sound & Hero Reveal State
+  // Masterclass Video Sound, Splash & Hero Reveal State
   const [masterclassSound, setMasterclassSound] = useState(true);
+  const [audioSplashOpen, setAudioSplashOpen] = useState(false);
   const [heroContentRevealed, setHeroContentRevealed] = useState(false);
   const masterclassVideoRef = useRef<HTMLVideoElement>(null);
   const hasAudioPlayedOnceRef = useRef(false);
@@ -180,11 +183,23 @@ export const ExecutiveAcademyHome: React.FC = () => {
     }
   };
 
+  // Immediate one-touch / tap audio activation for mobile and desktop
+  const enterExperienceWithSound = () => {
+    const video = masterclassVideoRef.current;
+    if (video) {
+      video.muted = false;
+      video.volume = 1.0;
+      video.play().catch(() => {});
+      setMasterclassSound(true);
+    }
+    setAudioSplashOpen(false);
+  };
+
   useEffect(() => {
     const video = masterclassVideoRef.current;
     if (!video) return;
 
-    // Immediately configure audio for unmuted start
+    // Configure video attributes for unmuted launch
     video.muted = false;
     video.volume = 1.0;
 
@@ -194,37 +209,39 @@ export const ExecutiveAcademyHome: React.FC = () => {
         video.volume = 1.0;
         await video.play();
         setMasterclassSound(true);
+        setAudioSplashOpen(false);
       } catch (autoplayError) {
-        // If modern browser autoplay policy temporarily restricts unmuted sound
-        // before the first interaction, start playback and immediately unmute
-        // on ANY user movement (pointermove, mousemove, scroll, touch, click, keydown)
+        // Modern browser / iOS Safari / Android autoplay policy restricted unmuted audio on cold start
+        // Keep video rolling silently in background and show the Tap-to-Enter curtain immediately
         video.muted = true;
         try {
           await video.play();
         } catch (_) {}
+        setAudioSplashOpen(true);
 
-        const unmuteImmediately = () => {
+        const unmuteOnFirstGesture = () => {
           if (video && !hasAudioPlayedOnceRef.current) {
             video.muted = false;
             video.volume = 1.0;
             video.play().catch(() => {});
             setMasterclassSound(true);
           }
+          setAudioSplashOpen(false);
           detachListeners();
         };
 
         const detachListeners = () => {
-          const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'mousemove', 'pointermove', 'focus'];
+          const events = ['pointerdown', 'touchstart', 'click'];
           events.forEach((evt) => {
-            window.removeEventListener(evt, unmuteImmediately);
-            document.removeEventListener(evt, unmuteImmediately);
+            window.removeEventListener(evt, unmuteOnFirstGesture);
+            document.removeEventListener(evt, unmuteOnFirstGesture);
           });
         };
 
-        const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'mousemove', 'pointermove', 'focus'];
+        const events = ['pointerdown', 'touchstart', 'click'];
         events.forEach((evt) => {
-          window.addEventListener(evt, unmuteImmediately, { once: true, passive: true });
-          document.addEventListener(evt, unmuteImmediately, { once: true, passive: true });
+          window.addEventListener(evt, unmuteOnFirstGesture, { once: true, passive: true });
+          document.addEventListener(evt, unmuteOnFirstGesture, { once: true, passive: true });
         });
       }
     };
@@ -715,10 +732,72 @@ export const ExecutiveAcademyHome: React.FC = () => {
   const currentCourse = COURSE_TABS[activeCourseTab];
 
   return (
-    <div className="w-full bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-primary">
+    <div className="w-full bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-primary overflow-x-hidden relative">
+      {/* 0. FULLSCREEN AUDIO SPLASH CURTAIN FOR MOBILE & DESKTOP BROWSERS */}
+      {audioSplashOpen && (
+        <div
+          onClick={enterExperienceWithSound}
+          className="fixed inset-0 z-[100] bg-black/92 backdrop-blur-2xl flex flex-col items-center justify-center p-6 text-center select-none cursor-pointer transition-opacity duration-300 animate-in fade-in"
+        >
+          {/* Pulsing Golden Monogram */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 rounded-full bg-[#fcd997]/25 animate-ping" />
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/80 bg-black flex items-center justify-center relative z-10">
+              <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
+            </div>
+          </div>
+
+          {/* Title & Tagline */}
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#fcd997] mb-2 font-semibold">
+            FQore Executive Academy
+          </span>
+          <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white mb-2 max-w-md">
+            Not Just Knowledge. <br />
+            <span className="bg-gradient-to-r from-[#fcd997] via-[#f7d79b] to-[#cba258] bg-clip-text text-transparent">
+              Real Solutions.
+            </span>
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300 max-w-sm mb-8 font-light leading-relaxed">
+            High-definition masterclass sound &amp; visuals are ready. Tap anywhere on the screen to enter immediately.
+          </p>
+
+          {/* Tap-To-Enter Button */}
+          <div className="w-full max-w-xs py-3.5 px-6 rounded-full bg-gradient-to-r from-[#fcd997] to-[#cba258] text-[#0d1c32] font-mono text-xs sm:text-sm font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_35px_rgba(252,217,151,0.45)] hover:scale-105 transition-transform animate-pulse">
+            <span className="material-symbols-outlined text-[20px]">volume_up</span>
+            <span>TAP TO ENTER WITH AUDIO</span>
+          </div>
+
+          {/* Equalizer animation */}
+          <div className="flex items-center gap-1 mt-6 h-5" aria-hidden="true">
+            <span className="w-1 h-3 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.3s]" />
+            <span className="w-1 h-5 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.15s]" />
+            <span className="w-1 h-2 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.45s]" />
+            <span className="w-1 h-4 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.2s]" />
+            <span className="w-1 h-5 bg-[#fcd997] rounded-full animate-bounce" />
+          </div>
+
+          {/* Continue Muted Option */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setAudioSplashOpen(false);
+              if (masterclassVideoRef.current) {
+                masterclassVideoRef.current.muted = true;
+                masterclassVideoRef.current.play().catch(() => {});
+              }
+              setMasterclassSound(false);
+            }}
+            className="mt-8 text-[11px] font-mono text-slate-400 hover:text-white uppercase tracking-wider underline cursor-pointer p-2 transition-colors"
+          >
+            Continue silently without audio &rarr;
+          </button>
+        </div>
+      )}
+
       {/* 1. TOP SHELL HEADER */}
       <header className="fixed top-0 inset-x-0 z-50 bg-primary-container/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(13,28,50,0.25)] border-b border-surface-container-lowest/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop h-20 flex items-center justify-between gap-space-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-margin-desktop h-20 flex items-center justify-between gap-space-md">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-space-md shrink-0 group">
             {/* Official FQore Circular Golden Monogram Emblem */}
@@ -813,7 +892,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
           </nav>
 
           {/* Right Action Utilities */}
-          <div className="flex items-center gap-space-md shrink-0">
+          <div className="flex items-center gap-2 sm:gap-space-md shrink-0">
             <Link
               href="/search"
               aria-label="Search"
@@ -831,7 +910,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
             <Link
               href="/contact"
-              className="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md uppercase tracking-wider text-secondary-container hover:bg-secondary-container/10 transition-colors"
+              className="hidden md:inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-lg font-label-md text-label-md uppercase tracking-wider text-secondary-container hover:bg-secondary-container/10 transition-colors"
             >
               <span className="font-label-md text-label-md">CONTACT US</span>
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -844,15 +923,129 @@ export const ExecutiveAcademyHome: React.FC = () => {
             >
               <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
             </Link>
+
+            {/* Mobile Hamburger Menu Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen(!mobileNavOpen)}
+              className="xl:hidden p-2 rounded-lg text-secondary-container hover:bg-surface-container-lowest/10 transition-colors flex items-center justify-center cursor-pointer"
+              aria-label="Toggle Navigation Menu"
+            >
+              <span className="material-symbols-outlined text-[26px]">
+                {mobileNavOpen ? 'close' : 'menu'}
+              </span>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer for Phones and Tablets */}
+        {mobileNavOpen && (
+          <div className="xl:hidden bg-primary-container/98 backdrop-blur-2xl border-b border-surface-container-lowest/15 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-4 duration-300 max-h-[calc(100vh-5rem)] overflow-y-auto">
+            <div className="flex flex-col space-y-2.5 font-label-md uppercase tracking-wider text-sm">
+              <Link
+                href="/about"
+                onClick={() => setMobileNavOpen(false)}
+                className="py-2.5 px-3 rounded-lg text-surface-container-lowest hover:bg-surface-container-lowest/10 transition-colors flex items-center justify-between"
+              >
+                <span>About Us</span>
+                <span className="material-symbols-outlined text-[18px] text-slate-400">chevron_right</span>
+              </Link>
+              <a
+                href="#curriculum-breakdown"
+                onClick={() => setMobileNavOpen(false)}
+                className="py-2.5 px-3 rounded-lg text-surface-container-lowest hover:bg-surface-container-lowest/10 transition-colors flex items-center justify-between"
+              >
+                <span>How It Works</span>
+                <span className="material-symbols-outlined text-[18px] text-slate-400">chevron_right</span>
+              </a>
+
+              {/* Mobile Courses Dropdown / Accordion */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setMobileCoursesOpen(!mobileCoursesOpen)}
+                  className="w-full flex items-center justify-between py-2.5 px-3 rounded-lg text-secondary-container hover:bg-surface-container-lowest/10 transition-colors"
+                >
+                  <span className="font-bold">Courses</span>
+                  <span className={`material-symbols-outlined text-[18px] transition-transform duration-200 ${mobileCoursesOpen ? 'rotate-180' : ''}`}>
+                    expand_more
+                  </span>
+                </button>
+                {mobileCoursesOpen && (
+                  <div className="pl-4 pr-2 py-2 space-y-2 border-l-2 border-secondary-container/30 ml-3 mt-1 animate-in fade-in duration-200">
+                    {Object.values(COURSE_TABS).map((tab) => (
+                      <a
+                        key={tab.id}
+                        href="#curriculum-breakdown"
+                        onClick={() => {
+                          setActiveCourseTab(tab.id);
+                          setMobileNavOpen(false);
+                        }}
+                        className="block py-2 text-xs normal-case text-slate-300 hover:text-secondary-container transition-colors border-b border-surface-container-lowest/5 last:border-0"
+                      >
+                        <div className="font-semibold text-surface-container-lowest">{tab.title.split('&')[0].trim()}</div>
+                        <div className="text-[11px] text-secondary-container font-mono mt-0.5">{tab.planTier}</div>
+                      </a>
+                    ))}
+                    <Link
+                      href="/courses"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="block pt-2 text-xs text-secondary-container font-semibold uppercase tracking-wider hover:underline"
+                    >
+                      View Full Course Catalog &rarr;
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              <Link
+                href="/resources"
+                onClick={() => setMobileNavOpen(false)}
+                className="py-2.5 px-3 rounded-lg text-surface-container-lowest hover:bg-surface-container-lowest/10 transition-colors flex items-center justify-between"
+              >
+                <span>Business PDFs</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-mono">
+                  Download
+                </span>
+              </Link>
+
+              <a
+                href="#pricing-matrix"
+                onClick={() => setMobileNavOpen(false)}
+                className="py-2.5 px-3 rounded-lg text-surface-container-lowest hover:bg-surface-container-lowest/10 transition-colors flex items-center justify-between"
+              >
+                <span>Pricing</span>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-[#fcd997]/20 text-[#fcd997] font-mono font-bold">
+                  From ₹59
+                </span>
+              </a>
+
+              <Link
+                href="/login"
+                onClick={() => setMobileNavOpen(false)}
+                className="py-2.5 px-3 rounded-lg text-surface-container-lowest hover:bg-surface-container-lowest/10 transition-colors flex items-center justify-between"
+              >
+                <span>Log In</span>
+                <span className="material-symbols-outlined text-[18px] text-slate-400">login</span>
+              </Link>
+
+              <Link
+                href="/contact"
+                onClick={() => setMobileNavOpen(false)}
+                className="w-full text-center py-3 rounded-lg bg-secondary-container text-primary font-bold shadow-md hover:bg-secondary-fixed transition-colors block mt-3"
+              >
+                Contact Us
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* MAIN BODY CONTAINER */}
       <main className="w-full pt-20 bg-surface min-h-screen">
         <div className="flex flex-col w-full">
           {/* 1. CINEMATIC VIDEO HERO BACKGROUND */}
-          <section className="relative w-full h-[90vh] min-h-[640px] max-h-[960px] overflow-hidden bg-black flex items-center justify-center">
+          <section className="relative w-full h-[85vh] sm:h-[90vh] min-h-[560px] sm:min-h-[640px] max-h-[960px] overflow-hidden bg-black flex items-center justify-center">
             {/* Full-bleed Static Background Video */}
             <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
               <video
@@ -875,7 +1068,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
             {/* Foreground Cinematic Hero Branding (Enters in animated way after video plays once) */}
             <div
-              className={`relative z-20 text-center px-6 max-w-4xl mx-auto flex flex-col items-center justify-center space-y-6 transition-all duration-1000 ease-out ${
+              className={`relative z-20 text-center px-4 sm:px-6 max-w-4xl mx-auto flex flex-col items-center justify-center space-y-4 sm:space-y-6 transition-all duration-1000 ease-out ${
                 heroContentRevealed
                   ? 'opacity-100 pointer-events-auto'
                   : 'opacity-0 pointer-events-none'
@@ -883,7 +1076,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
             >
               {/* Circular Logo Monogram with Staggered Entrance */}
               <div
-                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/70 bg-black flex items-center justify-center mb-1 transition-all duration-1000 ease-out transform ${
+                className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/70 bg-black flex items-center justify-center mb-1 transition-all duration-1000 ease-out transform ${
                   heroContentRevealed
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 -translate-y-12 scale-50'
@@ -894,7 +1087,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
               {/* Badge */}
               <div
-                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fcd997]/15 backdrop-blur-md border border-[#fcd997]/40 text-xs font-mono uppercase tracking-widest text-[#fcd997] shadow-lg transition-all duration-700 ease-out delay-200 transform ${
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fcd997]/15 backdrop-blur-md border border-[#fcd997]/40 text-[11px] sm:text-xs font-mono uppercase tracking-widest text-[#fcd997] shadow-lg transition-all duration-700 ease-out delay-200 transform ${
                   heroContentRevealed
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-8'
@@ -906,7 +1099,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
               {/* Main Headline */}
               <h1
-                className={`font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight drop-shadow-[0_10px_35px_rgba(0,0,0,0.95)] uppercase leading-none transition-all duration-1000 ease-out delay-400 transform ${
+                className={`font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight drop-shadow-[0_10px_35px_rgba(0,0,0,0.95)] uppercase leading-tight sm:leading-none transition-all duration-1000 ease-out delay-400 transform ${
                   heroContentRevealed
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-10 scale-95'
@@ -920,7 +1113,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
               {/* Subtitle Words */}
               <p
-                className={`text-sm sm:text-base md:text-lg text-slate-200 max-w-2xl font-light leading-relaxed drop-shadow-md transition-all duration-700 ease-out delay-600 transform ${
+                className={`text-xs sm:text-base md:text-lg text-slate-200 max-w-2xl font-light leading-relaxed drop-shadow-md px-2 transition-all duration-700 ease-out delay-600 transform ${
                   heroContentRevealed
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-8'
@@ -931,7 +1124,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
               {/* Action Buttons */}
               <div
-                className={`flex flex-wrap items-center justify-center gap-4 pt-3 transition-all duration-700 ease-out delay-800 transform ${
+                className={`flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto pt-2 sm:pt-3 transition-all duration-700 ease-out delay-800 transform ${
                   heroContentRevealed
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-8'
@@ -950,7 +1143,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                       }
                     }
                   }}
-                  className={`px-5 py-2.5 rounded-full text-xs font-mono font-bold tracking-wider flex items-center gap-2 transition-all cursor-pointer backdrop-blur-md border shadow-lg ${
+                  className={`w-full sm:w-auto px-5 py-2.5 rounded-full text-xs font-mono font-bold tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer backdrop-blur-md border shadow-lg ${
                     masterclassSound
                       ? 'bg-[#fcd997] text-[#1a1200] border-[#fcd997] shadow-[0_0_20px_rgba(252,217,151,0.3)]'
                       : 'bg-black/60 text-white border-white/30 hover:bg-black/80'
@@ -965,7 +1158,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
                 <a
                   href="#hero-curriculum"
-                  className="px-6 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/30 text-xs font-mono uppercase tracking-wider font-semibold transition-all flex items-center gap-1.5"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/30 text-xs font-mono uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5"
                 >
                   <span>Explore Curriculum</span>
                   <span className="material-symbols-outlined text-[16px]">arrow_downward</span>
@@ -974,7 +1167,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
               {/* Scroll Indicator */}
               <div
-                className={`pt-6 flex flex-col items-center gap-1 text-slate-400 text-[11px] font-mono uppercase tracking-widest animate-bounce transition-all duration-700 ease-out delay-1000 ${
+                className={`pt-4 sm:pt-6 flex flex-col items-center gap-1 text-slate-400 text-[11px] font-mono uppercase tracking-widest animate-bounce transition-all duration-700 ease-out delay-1000 ${
                   heroContentRevealed ? 'opacity-100' : 'opacity-0'
                 }`}
               >
@@ -985,7 +1178,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
             {/* Subtle Overlay Badge while initial video is playing */}
             {!heroContentRevealed && (
-              <div className="absolute bottom-8 z-30 flex flex-wrap items-center justify-center gap-3 px-4">
+              <div className="absolute bottom-6 sm:bottom-8 z-30 flex flex-col sm:flex-row items-center justify-center gap-2.5 px-4 w-full sm:w-auto max-w-md mx-auto">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -997,13 +1190,13 @@ export const ExecutiveAcademyHome: React.FC = () => {
                       setMasterclassSound(next);
                     }
                   }}
-                  className="px-5 py-2.5 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md border border-[#fcd997]/50 text-[#fcd997] text-xs font-mono tracking-wider flex items-center gap-2 transition-all cursor-pointer shadow-[0_0_25px_rgba(252,217,151,0.3)] hover:scale-105"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-black/80 hover:bg-black/95 backdrop-blur-md border border-[#fcd997]/60 text-[#fcd997] text-xs font-mono tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_0_25px_rgba(252,217,151,0.35)] active:scale-95"
                   title="Toggle Audio"
                 >
                   <span className="material-symbols-outlined text-[16px] text-emerald-400">
                     {masterclassSound ? 'volume_up' : 'volume_off'}
                   </span>
-                  <span>{masterclassSound ? 'Masterclass Audio Playing' : 'Click to Enable Sound'}</span>
+                  <span>{masterclassSound ? 'Masterclass Audio Playing' : 'Tap to Enable Sound'}</span>
                 </button>
 
                 <button
@@ -1011,7 +1204,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                     e.stopPropagation();
                     triggerHeroReveal();
                   }}
-                  className="px-4 py-2.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/25 text-white/85 hover:text-white text-xs font-mono tracking-wider transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/25 text-white/85 hover:text-white text-xs font-mono tracking-wider transition-all cursor-pointer text-center"
                   title="Skip to overview"
                 >
                   <span>Skip Intro &rarr;</span>
@@ -1138,10 +1331,10 @@ export const ExecutiveAcademyHome: React.FC = () => {
                     stock market mechanics, and hedge fund-grade financial blueprints.
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-space-md">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-space-md w-full sm:w-auto">
                     <a
                       href="#curriculum-breakdown"
-                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-secondary-container text-primary-container font-label-md text-label-md uppercase tracking-wider font-bold shadow-lg hover:bg-secondary-fixed transition-all hover:scale-105 group"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-secondary-container text-primary-container font-label-md text-label-md uppercase tracking-wider font-bold shadow-lg hover:bg-secondary-fixed transition-all hover:scale-105 group text-center"
                     >
                       <span>Explore Curriculum</span>
                       <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -1149,7 +1342,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
                     <a
                       href="#pricing-matrix"
-                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-surface-container-lowest/10 text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider hover:bg-surface-container-lowest/20 transition-all"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-surface-container-lowest/10 text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider hover:bg-surface-container-lowest/20 transition-all text-center"
                     >
                       <span>View Pricing (From ₹59)</span>
                       <span className="material-symbols-outlined text-[18px]">loyalty</span>
@@ -1157,28 +1350,28 @@ export const ExecutiveAcademyHome: React.FC = () => {
                   </div>
 
                   {/* Proof Metrics Bar */}
-                  <div className="grid grid-cols-3 gap-6 pt-space-xl mt-space-lg w-full max-w-lg">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-6 pt-space-md sm:pt-space-xl mt-space-md sm:mt-space-lg w-full max-w-lg text-center sm:text-left">
                     <div className="flex flex-col">
-                      <span className="font-headline-md text-headline-md text-secondary-container font-bold">
+                      <span className="text-xl sm:text-3xl lg:text-headline-md text-secondary-container font-bold">
                         14,200+
                       </span>
-                      <span className="font-body-sm text-body-sm text-on-primary-container">
+                      <span className="text-[11px] sm:text-body-sm text-on-primary-container leading-tight mt-0.5">
                         Executive Alumni
                       </span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-headline-md text-headline-md text-surface-container-lowest font-bold">
+                      <span className="text-xl sm:text-3xl lg:text-headline-md text-surface-container-lowest font-bold">
                         98.4%
                       </span>
-                      <span className="font-body-sm text-body-sm text-on-primary-container">
+                      <span className="text-[11px] sm:text-body-sm text-on-primary-container leading-tight mt-0.5">
                         Dossier Utility Rate
                       </span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-headline-md text-headline-md text-secondary-container font-bold">
+                      <span className="text-xl sm:text-3xl lg:text-headline-md text-secondary-container font-bold">
                         ₹59
                       </span>
-                      <span className="font-body-sm text-body-sm text-on-primary-container">
+                      <span className="text-[11px] sm:text-body-sm text-on-primary-container leading-tight mt-0.5">
                         Entry Starting Tier
                       </span>
                     </div>
@@ -1186,11 +1379,11 @@ export const ExecutiveAcademyHome: React.FC = () => {
                 </div>
 
                 {/* Hero Graphic: Three.js 360-degree Rotating 3D Executive Book */}
-                <div className="lg:col-span-5 relative">
+                <div className="lg:col-span-5 relative mt-6 lg:mt-0">
                   <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-tertiary-container border border-surface-container-lowest/10">
                     <div
                       ref={bookContainerRef}
-                      className="relative h-[440px] w-full cursor-grab active:cursor-grabbing"
+                      className="relative h-[300px] sm:h-[380px] lg:h-[440px] w-full cursor-grab active:cursor-grabbing"
                     >
                       <canvas ref={bookCanvasRef} className="w-full h-full block" />
 
@@ -1217,7 +1410,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                       </div>
 
                       {/* Terminal Overlay Card */}
-                      <div className="absolute bottom-3 inset-x-3 p-space-md rounded-xl bg-primary-container/95 backdrop-blur-lg shadow-xl border border-surface-container-lowest/10 z-10 pointer-events-auto">
+                      <div className="absolute bottom-2.5 inset-x-2.5 sm:bottom-3 sm:inset-x-3 p-3 sm:p-space-md rounded-xl bg-primary-container/95 backdrop-blur-lg shadow-xl border border-surface-container-lowest/10 z-10 pointer-events-auto">
                         <div className="flex items-center justify-between pb-2 mb-2 border-b border-surface-container-lowest/10">
                           <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-secondary-container text-[20px]">
@@ -1467,8 +1660,8 @@ export const ExecutiveAcademyHome: React.FC = () => {
                 </div>
 
                 {/* Plan 2: Growth ₹99 (Most Popular) */}
-                <div className="relative flex flex-col justify-between bg-primary-container text-surface-container-lowest p-space-lg rounded-2xl shadow-xl scale-105 z-10 border-2 border-secondary-container">
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-secondary-container text-primary font-label-sm text-label-sm uppercase tracking-widest font-bold shadow-md">
+                <div className="relative flex flex-col justify-between bg-primary-container text-surface-container-lowest p-6 sm:p-space-lg rounded-2xl shadow-xl md:scale-105 my-3 md:my-0 z-10 border-2 border-secondary-container">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-secondary-container text-primary font-label-sm text-label-sm uppercase tracking-widest font-bold shadow-md whitespace-nowrap">
                     MOST POPULAR / BEST VALUE
                   </div>
 
