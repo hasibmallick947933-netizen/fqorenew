@@ -1,4 +1,15 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+export const resolveApiUrl = (endpoint: string): string => {
+  let base = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api').trim();
+  base = base.replace(/\/+$/, '');
+  let cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  if (base.endsWith('/api') && cleanEndpoint.startsWith('/api/')) {
+    cleanEndpoint = cleanEndpoint.substring(4);
+  } else if (!base.endsWith('/api') && !cleanEndpoint.startsWith('/api/')) {
+    base = `${base}/api`;
+  }
+  return `${base}${cleanEndpoint}`;
+};
 
 class ApiError extends Error {
   status: number;
@@ -27,7 +38,8 @@ const authHeaders = (): Record<string, string> => {
 
 export const api = {
   async get<T>(endpoint: string, customHeaders: Record<string, string> = {}): Promise<T> {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const url = resolveApiUrl(endpoint);
+    const res = await fetch(url, {
       method: 'GET',
       headers: { ...authHeaders(), ...customHeaders },
       cache: 'no-store',
@@ -41,7 +53,8 @@ export const api = {
   },
 
   async post<T>(endpoint: string, body: any): Promise<T> {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const url = resolveApiUrl(endpoint);
+    const res = await fetch(url, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(body),
@@ -55,7 +68,8 @@ export const api = {
   },
 
   async put<T>(endpoint: string, body: any): Promise<T> {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const url = resolveApiUrl(endpoint);
+    const res = await fetch(url, {
       method: 'PUT',
       headers: authHeaders(),
       body: JSON.stringify(body),
@@ -69,7 +83,8 @@ export const api = {
   },
 
   async patch<T>(endpoint: string, body?: any): Promise<T> {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const url = resolveApiUrl(endpoint);
+    const res = await fetch(url, {
       method: 'PATCH',
       headers: authHeaders(),
       body: body ? JSON.stringify(body) : undefined,
@@ -83,7 +98,8 @@ export const api = {
   },
 
   async delete<T>(endpoint: string): Promise<T> {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const url = resolveApiUrl(endpoint);
+    const res = await fetch(url, {
       method: 'DELETE',
       headers: authHeaders(),
     });
@@ -105,7 +121,8 @@ export const api = {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const res = await fetch(`${API_BASE}/media/upload`, {
+    const url = resolveApiUrl('/media/upload');
+    const res = await fetch(url, {
       method: 'POST',
       headers,
       body: formData,

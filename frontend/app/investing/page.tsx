@@ -1,12 +1,11 @@
 import React from 'react';
 import { HubLayout } from '@/components/content/HubLayout';
 import { Content } from '@/lib/types';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+import { resolveApiUrl } from '@/lib/api';
 
 async function getInvestingData() {
   try {
-    const res = await fetch(`${API_BASE}/content?category=investing`, { cache: 'no-store' });
+    const res = await fetch(resolveApiUrl('/content?category=investing'), { cache: 'no-store' });
     const data = await res.json();
     return (data.content || []) as Content[];
   } catch (err) {

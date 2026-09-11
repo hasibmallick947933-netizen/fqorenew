@@ -87,19 +87,42 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
+// API Routes (mounted on both /api/* and root /* for seamless URL resolution)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/content', contentRoutes);
+app.use('/content', contentRoutes);
+
 app.use('/api/categories', categoryRoutes);
+app.use('/categories', categoryRoutes);
+
 app.use('/api/media', mediaRoutes);
+app.use('/media', mediaRoutes);
+
 app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/bookmarks', bookmarkRoutes);
+
 app.use('/api/progress', progressRoutes);
+app.use('/progress', progressRoutes);
+
 app.use('/api/stats', statsRoutes);
+app.use('/stats', statsRoutes);
+
 app.use('/api/users', userRoutes);
+app.use('/users', userRoutes);
+
 app.use('/api/public', publicRoutes);
+app.use('/public', publicRoutes);
+
 app.use('/api/plans', planRoutes);
+app.use('/plans', planRoutes);
+
 app.use('/api/payments', paymentRoutes);
+app.use('/payments', paymentRoutes);
+
 app.use('/api/courses', courseRoutes);
+app.use('/courses', courseRoutes);
 
 // 404 Catch-all
 app.use('*', (req, res) => {

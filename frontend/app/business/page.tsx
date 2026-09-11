@@ -1,8 +1,7 @@
 import React from 'react';
 import { HubLayout } from '@/components/content/HubLayout';
 import { Content } from '@/lib/types';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+import { resolveApiUrl } from '@/lib/api';
 
 const FALLBACK_BUSINESS_CONTENT: Content[] = [
   {
@@ -55,7 +54,7 @@ const FALLBACK_BUSINESS_CONTENT: Content[] = [
 
 async function getBusinessData() {
   try {
-    const res = await fetch(`${API_BASE}/content?category=business-models`, { cache: 'no-store' });
+    const res = await fetch(resolveApiUrl('/content?category=business-models'), { cache: 'no-store' });
     const data = await res.json();
     if (data.content && data.content.length > 0) {
       return data.content as Content[];
