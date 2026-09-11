@@ -142,9 +142,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
   const [courseFlyoutOpen, setCourseFlyoutOpen] = useState(false);
   const [activeCourseTab, setActiveCourseTab] = useState('tab-business');
 
-  // 3D Perspective View for Digital Slate
-  const [perspectiveView, setPerspectiveView] = useState<'iso' | 'flat' | 'tilt'>('iso');
-
   // Masterclass Video Sound State (Enabled by default)
   const [masterclassSound, setMasterclassSound] = useState(true);
   const masterclassVideoRef = useRef<HTMLVideoElement>(null);
@@ -178,6 +175,15 @@ export const ExecutiveAcademyHome: React.FC = () => {
         window.addEventListener('touchstart', enableSoundOnGesture, { once: true });
       });
     }
+  }, []);
+
+  // Scroll Position for Dynamic Background Video Animation
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // FAQ Accordion State
@@ -791,8 +797,102 @@ export const ExecutiveAcademyHome: React.FC = () => {
       {/* MAIN BODY CONTAINER */}
       <main className="w-full pt-20 bg-surface min-h-screen">
         <div className="flex flex-col w-full">
-          {/* 2. TOP NAVIGATION VISUAL MIRROR WITH INTERACTIVE COURSE FLYOUT */}
-          <section className="relative w-full bg-primary-container text-surface-container-lowest overflow-hidden">
+          {/* 1. CINEMATIC SCROLL-ANIMATED VIDEO HERO BACKGROUND */}
+          <section className="relative w-full h-[90vh] min-h-[640px] max-h-[960px] overflow-hidden bg-black flex items-center justify-center">
+            {/* Full-bleed Background Video with Scroll-Driven Scale & Parallax Animation */}
+            <div
+              className="absolute inset-0 w-full h-full will-change-transform pointer-events-none"
+              style={{
+                transform: `scale(${1 + Math.min(scrollY * 0.0006, 0.25)}) translateY(${scrollY * 0.18}px)`,
+                transition: 'transform 0.1s ease-out',
+              }}
+            >
+              <video
+                ref={masterclassVideoRef}
+                autoPlay
+                muted={!masterclassSound}
+                loop
+                playsInline
+                preload="auto"
+                className="w-full h-full object-cover object-center brightness-75 contrast-110"
+              >
+                <source src="https://res.cloudinary.com/xbvjx6qb/video/upload/v1789135767/video.mp4" type="video/mp4" />
+                <source src="/video.mp4" type="video/mp4" />
+              </video>
+              {/* Cinematic Vignette, Dark Gradients & Lighting */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#040813] via-black/30 to-black/70 pointer-events-none" />
+              <div className="absolute inset-0 bg-radial from-transparent via-black/20 to-black/85 pointer-events-none" />
+            </div>
+
+            {/* Foreground Cinematic Hero Branding */}
+            <div className="relative z-20 text-center px-6 max-w-4xl mx-auto flex flex-col items-center justify-center space-y-6">
+              {/* Circular Logo Monogram */}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/70 bg-black flex items-center justify-center mb-1">
+                <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
+              </div>
+
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fcd997]/15 backdrop-blur-md border border-[#fcd997]/40 text-xs font-mono uppercase tracking-widest text-[#fcd997] shadow-lg">
+                <span className="w-2 h-2 rounded-full bg-[#fcd997] animate-ping" />
+                The FQore Education Series
+              </div>
+
+              <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight drop-shadow-[0_10px_35px_rgba(0,0,0,0.95)] uppercase leading-none">
+                Not Just Knowledge. <br />
+                <span className="bg-gradient-to-r from-[#fcd997] via-[#f7d79b] to-[#cba258] bg-clip-text text-transparent">
+                  Real Solutions.
+                </span>
+              </h1>
+
+              <p className="text-sm sm:text-base md:text-lg text-slate-200 max-w-2xl font-light leading-relaxed drop-shadow-md">
+                From Beginner to Disciplined Trader &bull; Institutional Price Action &bull; Financial Modeling &bull; Business Autopsies
+              </p>
+
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
+                {/* Sound Toggle Button */}
+                <button
+                  onClick={() => {
+                    const next = !masterclassSound;
+                    setMasterclassSound(next);
+                    if (masterclassVideoRef.current) {
+                      masterclassVideoRef.current.muted = !next;
+                      if (next) {
+                        masterclassVideoRef.current.volume = 0.9;
+                        masterclassVideoRef.current.play();
+                      }
+                    }
+                  }}
+                  className={`px-5 py-2.5 rounded-full text-xs font-mono font-bold tracking-wider flex items-center gap-2 transition-all cursor-pointer backdrop-blur-md border shadow-lg ${
+                    masterclassSound
+                      ? 'bg-[#fcd997] text-[#1a1200] border-[#fcd997] shadow-[0_0_20px_rgba(252,217,151,0.3)]'
+                      : 'bg-black/60 text-white border-white/30 hover:bg-black/80'
+                  }`}
+                  title={masterclassSound ? 'Sound is playing (Click to mute)' : 'Click to enable audio'}
+                >
+                  <span className="material-symbols-outlined text-[16px]">
+                    {masterclassSound ? 'volume_up' : 'volume_off'}
+                  </span>
+                  <span>{masterclassSound ? 'Sound ON (Default)' : 'Unmute Audio'}</span>
+                </button>
+
+                <a
+                  href="#hero-curriculum"
+                  className="px-6 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/30 text-xs font-mono uppercase tracking-wider font-semibold transition-all flex items-center gap-1.5"
+                >
+                  <span>Explore Curriculum</span>
+                  <span className="material-symbols-outlined text-[16px]">arrow_downward</span>
+                </a>
+              </div>
+
+              {/* Scroll Indicator */}
+              <div className="pt-6 flex flex-col items-center gap-1 text-slate-400 text-[11px] font-mono uppercase tracking-widest animate-bounce">
+                <span>Scroll Down</span>
+                <span className="material-symbols-outlined text-[18px] text-[#fcd997]">expand_more</span>
+              </div>
+            </div>
+          </section>
+
+          {/* 2. TOP NAVIGATION VISUAL MIRROR WITH INTERACTIVE COURSE FLYOUT (Second Image in Prompt) */}
+          <section id="hero-curriculum" className="relative w-full bg-primary-container text-surface-container-lowest overflow-hidden">
             <div className="absolute -top-40 left-1/4 w-96 h-96 bg-secondary-container/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute top-20 right-10 w-[30rem] h-[30rem] bg-surface-tint/15 rounded-full blur-[100px] pointer-events-none" />
 
@@ -1043,236 +1143,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
             </div>
           </section>
 
-          {/* 4. 3D SCROLL-ANIMATED INTERACTIVE DIGITAL BOOK & TERMINAL SECTION */}
-          <section className="w-full py-space-xl bg-surface-container-lowest overflow-hidden border-b border-surface-container-high">
-            <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-4">
-                <div>
-                  <span className="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-bold">
-                    Interactive Learning Mechanics
-                  </span>
-                  <h2 className="font-headline-lg text-headline-lg text-primary mt-1">
-                    Turn High-Stakes Theory Into Algorithmic Execution
-                  </h2>
-                </div>
-                <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
-                  Scroll, pivot, and explore our proprietary 3D Dossier Frameworks. Each module includes both
-                  high-density reading and interactive video breakdowns.
-                </p>
-              </div>
-
-              {/* 3D Interactive Container */}
-              <div className="relative bg-surface-container-low rounded-2xl p-space-lg lg:p-space-xl overflow-hidden shadow-sm">
-                <div className="absolute top-6 left-6 z-20 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-tertiary text-on-tertiary font-label-sm text-label-sm">
-                    <span className="material-symbols-outlined text-[16px] text-secondary-container">
-                      show_chart
-                    </span>
-                    Live Market Analysis
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">
-                    <span className="material-symbols-outlined text-[16px]">calculate</span>
-                    DCF Valuation Spreadsheets
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-surface-container-highest text-on-surface font-label-sm text-label-sm">
-                    <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
-                    Proprietary PDF Guides
-                  </span>
-                </div>
-
-                {/* 3D Perspective Isometric Stage */}
-                <div className="py-12 flex items-center justify-center [perspective:1400px]">
-                  <div
-                    style={{
-                      transform:
-                        perspectiveView === 'iso'
-                          ? 'rotateX(14deg) rotateY(-12deg) rotateZ(2deg)'
-                          : perspectiveView === 'flat'
-                          ? 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)'
-                          : 'rotateX(26deg) rotateY(-22deg) rotateZ(6deg)',
-                      transformStyle: 'preserve-3d',
-                    }}
-                    className="relative w-full max-w-4xl transition-transform duration-700 ease-out cursor-pointer"
-                  >
-                    <div className="absolute -inset-4 bg-gradient-to-r from-secondary-container/30 to-primary-container/20 rounded-2xl blur-xl -z-10" />
-
-                    <div className="grid grid-cols-1 md:grid-cols-12 bg-[#040914] rounded-2xl shadow-2xl overflow-hidden border border-white/15">
-                      {/* Left: Video of Profit of Trading */}
-                      <div className="md:col-span-6 p-space-lg bg-[#060c18] text-surface-container-lowest flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/10">
-                        <div>
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#fcd997]" />
-                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                              <span className="font-label-sm text-label-sm text-emerald-400 uppercase font-mono tracking-wider font-bold ml-1">
-                                Profit of Trading
-                              </span>
-                            </div>
-                            <span className="font-label-sm text-label-sm px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold border border-emerald-500/40">
-                              +₹1,48,650 (+38.4%)
-                            </span>
-                          </div>
-
-                          <div className="relative bg-black rounded-xl overflow-hidden mb-4 shadow-2xl border border-emerald-500/30 group/profit">
-                            <video
-                              autoPlay
-                              muted
-                              loop
-                              playsInline
-                              preload="auto"
-                              className="w-full h-auto aspect-video object-cover rounded-xl"
-                            >
-                              <source src="/trading-profit.mp4" type="video/mp4" />
-                              Your browser does not support the video tag.
-                            </video>
-
-                            {/* Live Trading Telemetry HUD Overlay */}
-                            <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded bg-black/75 backdrop-blur-md border border-emerald-400/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                              <span>LIVE P&amp;L // TARGET 02 HIT</span>
-                            </div>
-                            <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono text-[#fcd997] pointer-events-none">
-                              R:R 1:3.4 &bull; SIZING 2%
-                            </div>
-                          </div>
-
-                          <p className="font-body-sm text-body-sm text-slate-300 leading-relaxed">
-                            Live systematic trade execution: Real market order flow, momentum confirmation, and disciplined profit capture in action.
-                          </p>
-                        </div>
-
-                        <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-3 text-xs font-mono">
-                          <span className="text-emerald-400 font-bold uppercase tracking-wider">
-                            Verified Execution Run
-                          </span>
-                          <span className="text-slate-400">
-                            60fps High Precision
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Right: Masterclass Video with Sound by Default */}
-                      <div className="md:col-span-6 p-space-lg bg-[#070e1b] text-surface-container-lowest flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                              <span className="w-2.5 h-2.5 rounded-full bg-[#fcd997]" />
-                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                              <span className="font-label-sm text-label-sm text-[#fcd997] uppercase font-mono tracking-wider font-bold ml-1">
-                                Masterclass Video
-                              </span>
-                            </div>
-
-                            {/* Sound Toggle Button */}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const next = !masterclassSound;
-                                setMasterclassSound(next);
-                                if (masterclassVideoRef.current) {
-                                  masterclassVideoRef.current.muted = !next;
-                                  if (next) {
-                                    masterclassVideoRef.current.volume = 0.9;
-                                    masterclassVideoRef.current.play();
-                                  }
-                                }
-                              }}
-                              className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider flex items-center gap-1.5 transition-all cursor-pointer border ${
-                                masterclassSound
-                                  ? 'bg-[#fcd997] text-[#1a1200] border-[#fcd997] shadow-sm'
-                                  : 'bg-white/10 text-slate-300 border-white/20 hover:bg-white/20'
-                              }`}
-                              title={masterclassSound ? 'Sound is Enabled (Click to Mute)' : 'Click to Turn Sound On'}
-                            >
-                              <span className="material-symbols-outlined text-[14px]">
-                                {masterclassSound ? 'volume_up' : 'volume_off'}
-                              </span>
-                              <span>{masterclassSound ? 'Sound ON' : 'Sound Muted'}</span>
-                            </button>
-                          </div>
-
-                          <div className="relative bg-black rounded-xl overflow-hidden mb-4 shadow-2xl border border-white/15 group/video">
-                            <video
-                              ref={masterclassVideoRef}
-                              controls
-                              autoPlay
-                              muted={!masterclassSound}
-                              loop
-                              playsInline
-                              preload="auto"
-                              className="w-full h-auto aspect-video object-cover rounded-xl"
-                            >
-                              <source src="https://res.cloudinary.com/xbvjx6qb/video/upload/v1789135767/video.mp4" type="video/mp4" />
-                              <source src="/video.mp4" type="video/mp4" />
-                              Your browser does not support the video tag.
-                            </video>
-                          </div>
-
-                          <p className="font-body-sm text-body-sm text-slate-300 leading-relaxed">
-                            Interactive synchronized chapter indexing: Jump between the forensic PDF calculation lines
-                            and corresponding live chart execution with sound.
-                          </p>
-                        </div>
-
-                        <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-3">
-                          <span className="font-label-sm text-label-sm text-[#fcd997] uppercase tracking-wider font-semibold">
-                            Institutional Class 04 of 12
-                          </span>
-                          <span className="font-label-sm text-label-sm text-emerald-400 font-mono">
-                            {masterclassSound ? '🔊 Audio Playing' : '1080p 60fps'} &bull; Cloudinary
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3D Perspective Switcher */}
-                <div className="flex items-center justify-center gap-3 mt-4">
-                  <button
-                    onClick={() => setPerspectiveView('iso')}
-                    className={`px-3 py-1.5 rounded-lg shadow-sm font-label-sm text-label-sm hover:scale-105 transition-all ${
-                      perspectiveView === 'iso'
-                        ? 'bg-primary text-on-primary'
-                        : 'bg-surface-container-lowest text-primary hover:bg-secondary-container'
-                    }`}
-                  >
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">view_in_ar</span> Isometric View
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={() => setPerspectiveView('flat')}
-                    className={`px-3 py-1.5 rounded-lg shadow-sm font-label-sm text-label-sm hover:scale-105 transition-all ${
-                      perspectiveView === 'flat'
-                        ? 'bg-primary text-on-primary'
-                        : 'bg-surface-container-lowest text-primary hover:bg-secondary-container'
-                    }`}
-                  >
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">desktop_windows</span> Flat Terminal
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={() => setPerspectiveView('tilt')}
-                    className={`px-3 py-1.5 rounded-lg shadow-sm font-label-sm text-label-sm hover:scale-105 transition-all ${
-                      perspectiveView === 'tilt'
-                        ? 'bg-primary text-on-primary'
-                        : 'bg-surface-container-lowest text-primary hover:bg-secondary-container'
-                    }`}
-                  >
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">rotate_90_degrees_ccw</span> Extreme Perspective
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
 
           {/* 5. INTERACTIVE CURRICULUM BREAKDOWN */}
           <section className="w-full py-space-xl bg-surface border-b border-surface-container-high" id="curriculum-breakdown">
