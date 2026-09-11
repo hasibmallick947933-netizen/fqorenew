@@ -118,24 +118,24 @@ const FALLBACK_COURSES: CourseItem[] = [
   },
   {
     _id: 'c5',
-    title: 'Execution Mechanics & Algorithmic Setups',
-    slug: 'execution-mechanics-algorithmic-setups',
-    moduleNum: 'Core Module 05',
+    title: 'Trading Blueprint: From Beginner to Disciplined Trader',
+    slug: 'trading-blueprint',
+    moduleNum: 'The FQore Education Series',
     description:
-      'Transition from discretionary guessing to high-expectancy algorithmic rules. Structure systematic risk protocols, Kelly criterion position sizing, and maximum drawdown circuit breakers.',
+      'The official 27-page comprehensive institutional guide to technical analysis, risk management, and disciplined execution. Master the complete 22-chapter curriculum: market structure, candlestick mastery, moving average stacks, expectancy mathematics, position sizing formulas, and the trader operating system.',
     category: 'Trading Systems',
-    level: 'Executive',
-    duration: '7.5 Hours Masterclass',
+    level: 'All Levels',
+    duration: '27-Page Guide + 22 Core Chapters',
     deliverables: [
-      'Daily Trading Journal & Metrics Sheet',
-      'Algorithmic Ruleset Playbook PDF',
-      'Risk of Ruin & Monte Carlo Simulators',
-      'Video Lecture: The Systematic Trader Mindset',
+      'Official 27-Page FQore Trading Blueprint (PDF Download)',
+      '22 Chapters: Market Structure, Candlesticks, Patterns & Risk',
+      'Trader Operating System & Master Trading Checklist',
+      'Trading Journal Template & Position Sizing Formulas',
     ],
     pricing: {
-      starter: { price: 59, features: ['Algorithmic Ruleset Playbook PDF', 'Position Sizing Rules'] },
-      growth: { price: 99, features: ['Playbook PDF + Daily Trading Journal XLSX', 'Monte Carlo Simulators'] },
-      premium: { price: 149, features: ['Complete Playbook + Journal + Mindset Video Masterclass', 'Direct Strategy Review'] },
+      starter: { price: 59, features: ['27-Page Trading Blueprint PDF', 'Full Web Reader Access', 'Master Trading Checklist'] },
+      growth: { price: 99, features: ['Blueprint PDF + Video Lessons', 'Position Sizing Excel Template', 'Trader Operating System'] },
+      premium: { price: 149, features: ['Full Blueprint Suite + Live Trading Room Pass', '1-on-1 Strategy Review', 'Lifetime Revisions'] },
     },
   },
   {
@@ -325,12 +325,21 @@ export default function CoursesPage() {
                   <span>Enroll in Course</span>
                   <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
                 </button>
-                <Link
-                  href="/resources"
-                  className="py-3.5 px-4 rounded-xl font-label-md text-label-md uppercase tracking-wider font-semibold border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors"
-                >
-                  View Dossiers
-                </Link>
+                {course.slug === 'trading-blueprint' || course.slug === 'execution-mechanics-algorithmic-setups' ? (
+                  <Link
+                    href="/trading/blueprint"
+                    className="py-3.5 px-4 rounded-xl font-label-md text-label-md uppercase tracking-wider font-bold bg-[#fcd997] text-[#1a1200] hover:bg-[#fad080] transition-colors shadow-sm whitespace-nowrap"
+                  >
+                    Read Blueprint (PDF)
+                  </Link>
+                ) : (
+                  <Link
+                    href="/resources"
+                    className="py-3.5 px-4 rounded-xl font-label-md text-label-md uppercase tracking-wider font-semibold border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap"
+                  >
+                    View Dossiers
+                  </Link>
+                )}
               </div>
             </div>
           ))}

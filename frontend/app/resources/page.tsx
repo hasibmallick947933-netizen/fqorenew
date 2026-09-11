@@ -7,86 +7,11 @@ import { Content } from '@/lib/types';
 import { useAuth } from '@/lib/authContext';
 import { PaywallModal } from '@/components/ui/PaywallModal';
 
-// Fallback high-value institutional downloadable assets
-const DEFAULT_DOWNLOADS = [
-  {
-    _id: 'd1',
-    title: 'FQore Executive Trading Blueprint (2026 Edition)',
-    slug: 'fqore-executive-trading-blueprint',
-    contentType: 'pdf',
-    description:
-      'Complete institutional playbook covering liquidity pools, auction order flow, and risk of ruin mathematical sizing formulas.',
-    mediaDetails: { size: 14500000 },
-    mediaUrl: '/FQore_Trading_Blueprint.pdf',
-    views: 4820,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'd2',
-    title: 'Automated 3-Statement DCF Model & Sensitivity Matrix',
-    slug: 'automated-3-statement-dcf-model',
-    contentType: 'excel',
-    description:
-      'Dynamic Wall Street financial model with unlevered free cash flow formulas, 2-way sensitivity tables, and automated WACC derivation.',
-    mediaDetails: { size: 4850000 },
-    mediaUrl: '/FQore_Trading_Blueprint.pdf',
-    views: 3940,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'd3',
-    title: 'Corporate Forensic Due Diligence Checklist (Institutional)',
-    slug: 'corporate-forensic-due-diligence-checklist',
-    contentType: 'pdf',
-    description:
-      'Audit protocols for detecting concealed liabilities, off-balance sheet SPVs, aggressive revenue recognition, and supplier bloat.',
-    mediaDetails: { size: 2900000 },
-    mediaUrl: '/FQore_Trading_Blueprint.pdf',
-    views: 2610,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'd4',
-    title: 'Market Microstructure & Order Flow Tape Reading Cheatsheet',
-    slug: 'market-microstructure-tape-reading',
-    contentType: 'pdf',
-    description:
-      'Quick-reference guide for decoding Level 2 depth, footprint delta absorption, and block transaction volume profiles.',
-    mediaDetails: { size: 5200000 },
-    mediaUrl: '/FQore_Trading_Blueprint.pdf',
-    views: 5120,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'd5',
-    title: 'E-Commerce Unit Economics & Cohort LTV Calculator',
-    slug: 'ecommerce-unit-economics-cohort-ltv',
-    contentType: 'excel',
-    description:
-      'Working spreadsheet for blended CAC payback sensitivity, payback period optimization, and gross margin durability tests.',
-    mediaDetails: { size: 3800000 },
-    mediaUrl: '/FQore_Trading_Blueprint.pdf',
-    views: 2980,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    _id: 'd6',
-    title: 'Beneish M-Score Earnings Manipulation Screener',
-    slug: 'beneish-m-score-screener',
-    contentType: 'excel',
-    description:
-      'Automated 8-variable mathematical index for identifying high-probability corporate financial report distortion.',
-    mediaDetails: { size: 4100000 },
-    mediaUrl: '/FQore_Trading_Blueprint.pdf',
-    views: 3410,
-    createdAt: new Date().toISOString(),
-  },
-];
-
 export default function ResourcesPage() {
   const { user, isAdmin } = useAuth();
-  const [resources, setResources] = useState<Content[]>(DEFAULT_DOWNLOADS as any);
-  const [loading, setLoading] = useState(false);
+  // Clean initialization with no mock business PDFs
+  const [resources, setResources] = useState<Content[]>([]);
+  const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -117,21 +42,14 @@ export default function ResourcesPage() {
       let url = `/content/resources/all?type=${typeFilter}&sort=${sortBy}`;
       if (search) url += `&search=${encodeURIComponent(search)}`;
       const data = await api.get<{ success: boolean; resources: Content[] }>(url);
-      if (data.resources && data.resources.length > 0) {
+      if (data.resources) {
         setResources(data.resources);
       } else {
-        const filtered = (DEFAULT_DOWNLOADS as any).filter((item: any) => {
-          const matchesType = typeFilter === 'all' || item.contentType === typeFilter;
-          const matchesSearch =
-            !search ||
-            item.title.toLowerCase().includes(search.toLowerCase()) ||
-            item.description.toLowerCase().includes(search.toLowerCase());
-          return matchesType && matchesSearch;
-        });
-        setResources(filtered);
+        setResources([]);
       }
     } catch (err) {
-      console.warn('Using default downloadables:', err);
+      console.warn('Could not fetch resources:', err);
+      setResources([]);
     } finally {
       setLoading(false);
     }
@@ -190,10 +108,10 @@ export default function ResourcesPage() {
 
   const typePills = [
     { label: 'All Resources', value: 'all', icon: 'folder_open' },
-    { label: 'Excel (.xlsx)', value: 'excel', icon: 'table_chart' },
-    { label: 'CSV Datasets', value: 'csv', icon: 'data_table' },
     { label: 'PDF Guides', value: 'pdf', icon: 'description' },
-    { label: 'Modeling Videos', value: 'video', icon: 'play_circle' },
+    { label: 'Excel (.xlsx)', value: 'excel', icon: 'table_chart' },
+    { label: 'Photos / Charts', value: 'image', icon: 'image' },
+    { label: 'Videos', value: 'video', icon: 'play_circle' },
   ];
 
   return (
@@ -209,7 +127,7 @@ export default function ResourcesPage() {
             Financial Models &amp; <span className="text-[#b8860b]">Resource Center</span>
           </h1>
           <p className="font-body-lg text-body-lg text-slate-600 leading-relaxed font-light">
-            Download verified dynamic three-statement financial models, forensic accounting checklists, valuation worksheets, and macroeconomic datasets. All downloads require verified tier enrollment.
+            Download verified educational PDFs, video masterclasses, and photographic chart breakdowns published by the FQore editorial desk. All downloads require verified tier enrollment.
           </p>
 
           {/* User Access Status Banner */}
@@ -275,7 +193,7 @@ export default function ResourcesPage() {
         {/* Resources Grid: Blue Colour Cards with Light Gold Letters */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
+            {[1, 2, 3].map((n) => (
               <div
                 key={n}
                 className="h-64 rounded-3xl bg-[#0a1628]/40 border border-[#d4af37]/20 animate-pulse"
@@ -297,6 +215,8 @@ export default function ResourcesPage() {
                           ? 'table_chart'
                           : item.contentType === 'video'
                           ? 'play_circle'
+                          : item.contentType === 'image'
+                          ? 'image'
                           : 'description'}
                       </span>
                       {item.contentType.toUpperCase()}
@@ -328,12 +248,11 @@ export default function ResourcesPage() {
                     </span>
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[14px] text-[#fcd997]">visibility</span>
-                      {item.views || 340} views
+                      {item.views || 1} views
                     </span>
                   </div>
 
                   <div className="flex gap-2">
-                    {/* Inspect button: Blue card border with Light Gold Letters */}
                     <Link
                       href={`/content/${item.slug}`}
                       className="flex-1 text-center py-3 px-3 rounded-xl font-label-md text-label-md uppercase tracking-wider border border-[#d4af37]/40 text-[#fcd997] hover:bg-[#d4af37]/10 transition-all font-semibold"
@@ -341,7 +260,6 @@ export default function ResourcesPage() {
                       Inspect
                     </Link>
 
-                    {/* Unlock / Download Button: Light Gold button */}
                     <button
                       onClick={(e) => handleDownloadClick(e, item)}
                       className={`px-4 py-3 rounded-xl font-label-md text-label-md uppercase tracking-wider font-bold flex items-center justify-center gap-1.5 shadow-md transition-all shrink-0 cursor-pointer ${
@@ -362,22 +280,34 @@ export default function ResourcesPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 rounded-3xl bg-[#0a1628] text-[#fcd997] border border-[#d4af37]/30">
-            <span className="material-symbols-outlined text-[48px] text-[#fcd997]/50 mx-auto mb-3 block">
-              folder_off
+          <div className="text-center py-16 px-6 rounded-3xl bg-[#0a1628] text-[#fcd997] border border-[#d4af37]/30 max-w-2xl mx-auto shadow-xl">
+            <span className="material-symbols-outlined text-[56px] text-[#fcd997]/60 mx-auto mb-4 block">
+              auto_stories
             </span>
-            <p className="font-serif text-xl text-[#fcd997] font-medium">
-              No institutional resources match this filter.
+            <h3 className="font-serif text-2xl font-semibold text-white mb-3">
+              Institutional Business Dossiers
+            </h3>
+            <p className="text-sm text-[#fae8c8]/80 leading-relaxed mb-6 font-light max-w-lg mx-auto">
+              All mock placeholder PDFs have been removed. The official 27-Page <strong>FQore Trading Blueprint</strong> is available directly within the <strong>Trading Course</strong>.
             </p>
-            <button
-              onClick={() => {
-                setTypeFilter('all');
-                setSearch('');
-              }}
-              className="mt-3 text-xs font-mono text-[#fcd997] hover:underline uppercase tracking-wider"
-            >
-              Reset Filters &rarr;
-            </button>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/courses"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#fcd997] text-[#1a1200] font-bold text-xs uppercase tracking-wider hover:bg-[#fad080] transition-colors shadow-lg"
+              >
+                Access Trading Course &amp; Blueprint &rarr;
+              </Link>
+
+              {isAdmin && (
+                <Link
+                  href="/admin/content/create"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl border border-[#d4af37]/50 text-[#fcd997] font-semibold text-xs uppercase tracking-wider hover:bg-[#d4af37]/15 transition-colors"
+                >
+                  + Admin: Upload New PDF / Media
+                </Link>
+              )}
+            </div>
           </div>
         )}
       </div>

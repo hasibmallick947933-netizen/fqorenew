@@ -77,11 +77,8 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop h-20 flex items-center justify-between gap-space-md">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0 group select-none">
-          <div className="w-9 h-9 rounded-lg bg-[#060d19] border border-surface-container-lowest/20 flex items-center justify-center p-1 shadow-md">
-            <div className="flex items-center gap-0.5">
-              <div className="w-1.5 h-5 bg-emerald-500 rounded-sm"></div>
-              <div className="w-1.5 h-3.5 bg-red-500 rounded-sm"></div>
-            </div>
+          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-md ring-1 ring-[#cba258]/50 bg-black flex items-center justify-center">
+            <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
           </div>
           <div className="flex flex-col">
             <span className="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight group-hover:text-secondary-container transition-colors leading-none">

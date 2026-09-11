@@ -73,6 +73,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Top Admin Sub-Header */}
       <div className="bg-[#070b16] border-b border-cyan-500/20 px-4 sm:px-8 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-md ring-1 ring-[#cba258]/50 bg-black flex items-center justify-center">
+              <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
+            </div>
+            <span className="text-sm font-bold text-white font-mono tracking-tight hidden md:inline">
+              FQ<span className="text-amber-400">ore</span>
+            </span>
+          </Link>
           <div className="px-2.5 py-1 rounded bg-cyan-500/20 border border-cyan-400 text-[10px] font-mono font-bold uppercase text-cyan-300">
             Admin Suite
           </div>

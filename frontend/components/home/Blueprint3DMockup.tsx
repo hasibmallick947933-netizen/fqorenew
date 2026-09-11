@@ -94,13 +94,9 @@ export const Blueprint3DMockup: React.FC<Blueprint3DMockupProps> = ({ onOpenPrev
           className="flex flex-col items-center justify-center my-6 text-center"
           style={{ transform: 'translateZ(50px)' }}
         >
-          {/* Logo mark */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-600 p-[1px] shadow-[0_0_25px_rgba(245,158,11,0.4)] mb-3">
-            <div className="w-full h-full rounded-2xl bg-[#080a11] flex items-center justify-center">
-              <span className="text-2xl font-black tracking-tighter text-white">
-                F<span className="text-amber-400">Q</span>
-              </span>
-            </div>
+          {/* Circular Logo Mark */}
+          <div className="w-16 h-16 rounded-full overflow-hidden mx-auto shadow-[0_0_25px_rgba(245,158,11,0.4)] ring-2 ring-amber-400/60 bg-black flex items-center justify-center mb-3">
+            <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
           </div>
 
           <h3 className="text-2xl font-black uppercase tracking-tight text-white font-sans">
@@ -113,10 +109,10 @@ export const Blueprint3DMockup: React.FC<Blueprint3DMockupProps> = ({ onOpenPrev
           <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent my-3" />
 
           <div className="text-2xl font-black uppercase tracking-tight text-white leading-tight">
-            FQORE <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">LEARNING</span>
+            TRADING <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">BLUEPRINT</span>
           </div>
           <p className="text-xs text-amber-300/90 mt-1 font-semibold tracking-wide uppercase">
-            Trading & Business Blueprint
+            From Beginner to Disciplined Trader (27-Page Master Guide)
           </p>
         </div>
 

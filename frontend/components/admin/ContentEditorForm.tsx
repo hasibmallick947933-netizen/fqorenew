@@ -213,15 +213,16 @@ export const ContentEditorForm: React.FC<ContentEditorFormProps> = ({
               onChange={(e) => setFormData({ ...formData, contentType: e.target.value as ContentType })}
               className="w-full px-3.5 py-2.5 text-xs bg-slate-900 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-cyan-400"
             >
-              <option value="article">Written Article</option>
-              <option value="company_analysis">Company Equity Analysis</option>
-              <option value="case_study">Business Case Study</option>
-              <option value="educational_note">Educational Note</option>
-              <option value="video">Video Masterclass</option>
-              <option value="excel">Excel Valuation Model (.xlsx / .xls)</option>
-              <option value="pdf">PDF Forensic Guide</option>
-              <option value="csv">CSV Dataset</option>
-              <option value="market_analysis">Market Analysis Report</option>
+              <option value="pdf">📄 PDF Document / E-Book Guide (.pdf)</option>
+              <option value="video">🎥 Video Masterclass / Recording (.mp4 / Stream)</option>
+              <option value="image">🖼️ Photo / Infographic / Chart (.png, .jpg, .webp)</option>
+              <option value="excel">📊 Excel Financial Model (.xlsx / .xls)</option>
+              <option value="article">📝 Written Article / Research Note</option>
+              <option value="company_analysis">🏢 Company Equity Analysis</option>
+              <option value="case_study">💼 Business Case Study</option>
+              <option value="educational_note">📌 Educational Note / Cheatsheet</option>
+              <option value="csv">📑 CSV Quantitative Dataset</option>
+              <option value="market_analysis">📈 Market Analysis Report</option>
             </select>
           </div>
 
@@ -338,10 +339,10 @@ export const ContentEditorForm: React.FC<ContentEditorFormProps> = ({
         <div className="border-2 border-dashed border-slate-800 hover:border-cyan-500/40 rounded-2xl p-6 text-center transition-colors bg-slate-950/40">
           <Upload className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
           <p className="text-xs text-slate-300 font-medium">
-            Upload attachment to Cloudinary (up to 50MB)
+            Upload attachment to Cloudinary / Server (up to 50MB)
           </p>
           <p className="text-[11px] text-slate-500 mt-0.5 mb-4">
-            Supports .xlsx, .xls, .pdf, .mp4, .csv, .png, .jpg
+            Supports PDF Documents (.pdf), Videos (.mp4, .mov), Photos &amp; Charts (.png, .jpg, .webp), and Excel Spreadsheets (.xlsx)
           </p>
 
           <label className="btn-chrome px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5">
