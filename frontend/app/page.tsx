@@ -1,14 +1,14 @@
 import React from 'react';
-import Link from 'next/link';
-import { HeroVideoSection } from '@/components/home/HeroVideoSection';
-import { VisionSection } from '@/components/home/VisionSection';
-import { DifferentSection } from '@/components/home/DifferentSection';
-import { MeetPeopleSection } from '@/components/home/MeetPeopleSection';
-import { CommunitySection } from '@/components/home/CommunitySection';
-import { ShapingFutureSection } from '@/components/home/ShapingFutureSection';
-import { HomePricingSection } from '@/components/home/HomePricingSection';
+import { GrowthHeroSection } from '@/components/home/GrowthHeroSection';
+import { FourPillarsSection } from '@/components/home/FourPillarsSection';
+import { CurriculumSection } from '@/components/home/CurriculumSection';
+import { ComparisonSection } from '@/components/home/ComparisonSection';
 import { FeaturedGrid } from '@/components/home/FeaturedGrid';
+import { HomePricingSection } from '@/components/home/HomePricingSection';
+import { ReviewsSection } from '@/components/home/ReviewsSection';
+import { FaqSection } from '@/components/home/FaqSection';
 import { BrandMarquee } from '@/components/home/BrandMarquee';
+import { StickyCtaBar } from '@/components/home/StickyCtaBar';
 import { Content, Category, Plan } from '@/lib/types';
 import { DEFAULT_PLANS } from '@/lib/constants';
 
@@ -46,36 +46,39 @@ async function getData() {
 }
 
 export default async function HomePage() {
-  const { categories, featured, latest, plans } = await getData();
+  const { featured, plans } = await getData();
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
-      {/* 1. Video Hero Section: 3D Chrome Crystal Wave + "GROW YOURSELF" (frame_005.jpg & frame_020.jpg) */}
-      <HeroVideoSection />
+    <div className="flex flex-col min-h-screen bg-[#04060c] text-white">
+      {/* 1. GrowthCodesIn-Style Hero: 3D Canvas + 3D Interactive Blueprint Mockup + PDF Peek */}
+      <GrowthHeroSection />
 
-      {/* 2. Vision Section: Grid Matrix with Pulsing Nodes + 01., 02., 03., 04. Cards (frame_040.jpg) */}
-      <VisionSection />
+      {/* 2. Four Pillars Section: Matching page.jpeg (Trading & Finance, Business, Personal Brand, Execution) */}
+      <FourPillarsSection />
 
-      {/* 3. How We're Different: Circuit Trace Lines + Geometric Icons + "Learn More ↗" (frame_060.jpg & frame_080.jpg) */}
-      <DifferentSection />
+      {/* 3. Comprehensive Curriculum Accordion: Modules 01 to 06 with exact lesson breakdowns */}
+      <CurriculumSection />
 
-      {/* 4. Meet People Behind: Interactive Rows + Dynamic Preview Visual (frame_100.jpg & frame_120.jpg) */}
-      <MeetPeopleSection />
+      {/* 4. Comparison Section: Retail Guesswork vs FQore Institutional Edge */}
+      <ComparisonSection />
 
-      {/* 5. Our Community: Concentric Arc Rings + Floating Pillar Cards (frame_140.jpg) */}
-      <CommunitySection />
+      {/* 5. Dynamic Featured Blueprints & Resources from MongoDB */}
+      <FeaturedGrid items={featured} />
 
       {/* 6. Pricing Section: Starter (₹59), Growth (₹99), Premium (₹149) with Razorpay Checkout */}
       <HomePricingSection initialPlans={plans} />
 
-      {/* 7. Most Popular Blueprints & Downloadable PDFs */}
-      <FeaturedGrid items={featured} />
+      {/* 7. Real Student & Trader Reviews / Testimonials */}
+      <ReviewsSection />
 
-      {/* 8. Join Us in Shaping the Future: Glowing Capsule Banner (frame_160.jpg) */}
-      <ShapingFutureSection />
+      {/* 8. Frequently Asked Questions */}
+      <FaqSection />
 
       {/* 9. Institutional Trust Marquee */}
       <BrandMarquee />
+
+      {/* 10. Sticky Bottom Bar on Scroll */}
+      <StickyCtaBar />
     </div>
   );
 }

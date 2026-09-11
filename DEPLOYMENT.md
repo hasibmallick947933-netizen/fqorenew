@@ -1,102 +1,107 @@
-# Production Deployment Guide
+# FQore — Production Deployment & Configuration Guide
 
-This guide walks you through deploying the **EduX Intel** educational platform to **Vercel** (Frontend), **Render** (Backend), **MongoDB Atlas** (Database), and **Cloudinary** (Media Storage).
-
----
-
-## 1. MongoDB Atlas Setup (Database)
-
-1. Sign in to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2. Create a free shared cluster (e.g. M0 tier).
-3. Under **Database Access**, create a database user:
-   - Username: `edux_admin`
-   - Password: Choose a secure password (e.g. `YourStrongPassword123`)
-   - Role: Read and write to any database.
-4. Under **Network Access**, add IP address:
-   - Add `0.0.0.0/0` (Allow Access from Anywhere so Render can connect).
-5. Click **Connect** → **Drivers** (Node.js) → Copy the connection string:
-   ```
-   mongodb+srv://edux_admin:<password>@cluster0.abcde.mongodb.net/edux_db?retryWrites=true&w=majority
-   ```
-   *(Replace `<password>` with your actual database user password)*
+This guide details how to deploy the **FQore** educational and digital blueprint platform to **Render** (Backend REST API) and **Vercel** (Frontend Next.js App) with **MongoDB Atlas** and **Cloudinary**.
 
 ---
 
-## 2. Cloudinary Setup (File & Media Storage)
+## 1. Cloudinary Setup (Live Media & File Storage)
 
-Cloudinary stores all uploaded images, video masterclasses, PDF guides, and Excel spreadsheets.
+Cloudinary stores all uploaded images, video lessons, PDF blueprints, and Excel spreadsheets.
 
-1. Sign up / log in to [Cloudinary](https://cloudinary.com/).
-2. From the **Dashboard**, copy your 3 API credentials:
-   - **Cloud Name** (e.g. `dxy8abcde`)
-   - **API Key** (e.g. `982348719283749`)
-   - **API Secret** (e.g. `aBcDeFgHiJkLmNoPqRsTuVwXyZ`)
+Credentials configured in your environment:
+* **Cloud Name**: `xbvjx6qb`
+* **API Key**: `312782684283273`
+* **API Secret**: `m_xLdjxrYN3NsAT78tg-_o9TnTU`
+* **CLOUDINARY_URL**: `cloudinary://312782684283273:m_xLdjxrYN3NsAT78tg-_o9TnTU@xbvjx6qb`
+
+---
+
+## 2. MongoDB Atlas Setup (Database)
+
+Your live MongoDB Atlas connection URI:
+```env
+MONGODB_URI=mongodb+srv://FQoreadmin:HM2506@cluster0.oue58pu.mongodb.net/fqore_db?retryWrites=true&w=majority&appName=Cluster0
+```
+
+Network Access: Ensure `0.0.0.0/0` is added under Atlas **Network Access** so Render can connect.
+
+The database is already pre-seeded with:
+* **Admin Account**: `fqorein@gmail.com`
+* **Admin Password**: `sunny005`
+* **Categories**: Trading, Price Action, E-Commerce Startup, Business Strategies, Company Analysis, Case Studies, Investing, Resources.
+* **Curriculum Content**: 10 high-value educational modules, downloadable PDF blueprints, and Excel financial models.
+* **Pricing Plans**: Starter (₹59), Growth (₹99), Premium (₹149).
 
 ---
 
 ## 3. Render Deployment (Backend REST API)
 
-1. Push this repository to GitHub or GitLab.
+1. Push code to your GitHub repo: `https://github.com/hasibmallick947933-netizen/fqorenew.git`
 2. Sign in to [Render](https://render.com/).
-3. Click **New +** → **Web Service**.
-4. Connect your GitHub repository.
+3. Click **New +** &rarr; **Web Service**.
+4. Connect your GitHub repository `fqorenew`.
 5. Configure the service settings:
-   - **Name**: `edux-backend-api`
+   - **Name**: `fqore-backend-api`
    - **Root Directory**: `backend`
    - **Environment**: `Node`
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Plan**: Free (or Starter)
-6. Add **Environment Variables** in the Render dashboard:
+   - **Plan**: Free or Starter
+6. Add **Environment Variables** in Render:
    | Key | Value | Description |
    | :--- | :--- | :--- |
    | `NODE_ENV` | `production` | Production environment |
-   | `PORT` | `10000` | Render default port |
-   | `MONGODB_URI` | `mongodb+srv://FQoreadmin:HM2506@cluster0.oue58pu.mongodb.net/edux_db?retryWrites=true&w=majority&appName=Cluster0` | MongoDB Atlas live cluster URI |
+   | `PORT` | `10000` | Render port |
+   | `MONGODB_URI` | `mongodb+srv://FQoreadmin:HM2506@cluster0.oue58pu.mongodb.net/fqore_db?retryWrites=true&w=majority&appName=Cluster0` | Live MongoDB Atlas cluster |
    | `JWT_SECRET` | `super_secret_jwt_key_edux_production_secure_778899` | Secret key for JWT auth |
-   | `JWT_EXPIRE` | `30d` | Token expiry |
+   | `JWT_EXPIRE` | `30d` | Token expiration |
    | `CLOUDINARY_CLOUD_NAME` | `xbvjx6qb` | Cloudinary Cloud Name |
    | `CLOUDINARY_API_KEY` | `312782684283273` | Cloudinary API Key |
    | `CLOUDINARY_API_SECRET` | `m_xLdjxrYN3NsAT78tg-_o9TnTU` | Cloudinary API Secret |
-   | `RAZORPAY_KEY_ID` | `rzp_live_...` or `rzp_test_...` | Razorpay Key ID (fallback test mode active if blank) |
-   | `RAZORPAY_KEY_SECRET` | `your_secret_...` | Razorpay Key Secret |
-   | `CLIENT_URL` | `https://your-edux-frontend.vercel.app` | Your Vercel frontend URL |
+   | `CLIENT_URL` | `https://your-fqore-frontend.vercel.app` | Your Vercel frontend URL |
 
-7. Click **Create Web Service**.
-8. Once deployed, note your backend URL (e.g. `https://edux-backend-api.onrender.com`).
-9. *(Optional)* Run the seed script via Render's **Shell** tab:
-   ```bash
-   node utils/seedData.js
-   ```
-   *(Note: The live MongoDB Atlas cluster is already seeded with Admin, sample curriculum publications, and the 3 pricing tiers: Starter ₹59, Growth ₹99, Premium ₹149).*
+7. Click **Create Web Service**. Once deployed, copy your API URL (e.g. `https://fqore-backend-api.onrender.com`).
 
 ---
 
 ## 4. Vercel Deployment (Frontend Next.js App)
 
 1. Sign in to [Vercel](https://vercel.com/).
-2. Click **Add New...** → **Project**.
-3. Import your Git repository.
+2. Click **Add New...** &rarr; **Project**.
+3. Import the `fqorenew` GitHub repository.
 4. In the configuration screen:
    - **Framework Preset**: `Next.js`
    - **Root Directory**: Click edit and select `frontend`
-5. Expand **Environment Variables** and add:
+5. Under **Environment Variables**, add:
    | Key | Value |
    | :--- | :--- |
-   | `NEXT_PUBLIC_API_URL` | `https://edux-backend-api.onrender.com/api` |
-   *(Point to your deployed Render backend `/api` endpoint)*
+   | `NEXT_PUBLIC_API_URL` | `https://fqore-backend-api.onrender.com/api` |
+   *(Replace with your live Render backend URL)*
 6. Click **Deploy**.
 
 ---
 
-## 5. Post-Deployment Verification
+## 5. Local Development Instructions
 
-1. Open your Vercel URL in a browser.
-2. Verify that homepage loads the futuristic cyber theme, ambient glow, and curriculum tracks.
-3. Click **Log In** (`/login`) and authenticate using the seeded credentials:
-   - Email: `fqorein@gmail.com`
-   - Password: `sunny005`
-4. Access `/admin` to verify:
-   - KPI metrics and active modules
-   - Media upload to Cloudinary
-   - Creation of an educational article or financial model.
+### Backend
+```bash
+cd backend
+npm install
+npm run dev
+# Running on http://localhost:5001
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# Running on http://localhost:3000
+```
+
+### Admin Access
+1. Visit `http://localhost:3000/login` (or on your live Vercel URL)
+2. Log in with:
+   - **Email**: `fqorein@gmail.com`
+   - **Password**: `sunny005`
+3. Navigate to `/admin` to manage content, upload media to Cloudinary, configure pricing plans, or manage users without modifying any code.

@@ -88,14 +88,21 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-50 bg-[#040711]/85 backdrop-blur-xl border-b border-white/10 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Left Brand: Minimalist '✕ FQore' matching frame_005.jpg */}
-          <Link href="/" className="flex items-center gap-2 group select-none">
-            <span className="text-cyan-400 font-mono text-lg font-light group-hover:scale-125 group-hover:text-cyan-300 transition-all duration-300">
-              ✕
-            </span>
-            <span className="font-sans font-bold text-lg tracking-tight text-white group-hover:text-cyan-300 transition-colors uppercase">
-              FQore
-            </span>
+          {/* Left Brand: FQore Logo Emblem matching page.jpeg */}
+          <Link href="/" className="flex items-center gap-2.5 group select-none">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 p-[1px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+              <div className="w-full h-full rounded-xl bg-[#080b14] flex items-center justify-center font-black text-amber-400 text-xs tracking-tighter">
+                FQ
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-sans font-black text-lg tracking-tight text-white group-hover:text-amber-400 transition-colors uppercase">
+                FQ<span className="text-amber-400">ore</span>
+              </span>
+              <span className="text-[8px] font-mono tracking-widest text-slate-400 uppercase -mt-1 hidden sm:block">
+                Core of Solutions
+              </span>
+            </div>
           </Link>
 
           {/* Center Navigation Links: matching video frame_005.jpg & frame_020.jpg */}

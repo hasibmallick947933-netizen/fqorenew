@@ -102,6 +102,13 @@ const seedDatabase = async () => {
         icon: 'DownloadCloud',
         order: 8,
       },
+      {
+        name: 'E-Commerce Startup',
+        slug: 'ecommerce-startup',
+        description: 'Launching, sourcing, scaling D2C brands, marketplace dynamics, and unit economics.',
+        icon: 'ShoppingBag',
+        order: 9,
+      },
     ];
 
     const catMap = {};
@@ -408,6 +415,47 @@ Asset prices over multi-quarter horizons correlate far more tightly with central
 ## The 2-Year / 10-Year Yield Spread
 Historically, the inversion of the yield curve signals recession risk, but the steepening following an inversion typically precedes equity market volatility as central banks begin emergency easing cycles.
         `,
+      },
+      {
+        title: 'Zero to ₹10L/Month E-Commerce Startup Blueprint: Sourcing, Unit Economics & Scaling',
+        slug: 'zero-to-10l-ecommerce-startup-blueprint',
+        description: 'Complete operational playbook for finding winning products, negotiating domestic supplier MOQs, building high-converting funnels, and managing ROAS.',
+        contentType: 'article',
+        category: catMap['ecommerce-startup'],
+        subcategory: 'D2C Scaling',
+        tags: ['E-Commerce', 'Startup', 'D2C', 'Unit Economics', 'Shopify', 'Marketing'],
+        thumbnail: 'https://images.unsplash.com/photo-1556742049-0a67e55722c3?w=800&auto=format&fit=crop&q=80',
+        author: adminUser._id,
+        authorName: adminUser.name,
+        featured: true,
+        published: true,
+        views: 4520,
+        bookmarkCount: 410,
+        readTimeMinutes: 11,
+        difficulty: 'Intermediate',
+        content: `
+# The Modern E-Commerce Startup Engine
+
+Launching a direct-to-consumer (D2C) brand in the current market landscape requires ruthless focus on contribution margins rather than vanity top-line sales.
+
+## 1. Unit Economics Matrix
+
+Before spending a single rupee on Meta or Google Ads, your unit economic model must withstand returns and payment gateway charges:
+
+* **Gross Selling Price (AOV)**: ₹1,499
+* **COGS (Cost of Goods Sold)**: ₹350 (Target: ≤ 25% of AOV)
+* **Packaging & Forward Shipping**: ₹120
+* **RTO (Return to Origin) Buffer (15%)**: ₹90
+* **Payment Gateway Fee (2%)**: ₹30
+* **Target CPA (Cost Per Acquisition)**: ₹450
+* **Net Contribution Margin**: ₹459 (~30.6%)
+
+## 2. Supplier Negotiation & Quality Verification
+
+Always order a production sample before placing a commercial batch. Request supplier trade references and negotiate a 30% advance, 70% post-inspection payment term.
+        `,
+        seoTitle: 'Zero to ₹10L/Month E-Commerce Startup Blueprint',
+        seoDescription: 'Master D2C product sourcing, Shopify conversion funnels, unit economics, and paid customer acquisition.',
       },
     ];
 

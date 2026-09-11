@@ -29,9 +29,9 @@ export const HomePricingSection: React.FC<HomePricingSectionProps> = ({ initialP
   };
 
   return (
-    <section className="py-24 lg:py-32 border-b border-cyan-500/15 relative overflow-hidden" id="pricing">
+    <section className="py-24 lg:py-32 border-b border-white/10 relative overflow-hidden bg-[#04060c]" id="pricing">
       {/* Background Ambient Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 blur-[160px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/10 blur-[160px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header with Scroll InView */}
@@ -42,15 +42,15 @@ export const HomePricingSection: React.FC<HomePricingSectionProps> = ({ initialP
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-950/50 border border-indigo-500/30 text-xs font-mono uppercase text-indigo-300 mb-4 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            Simple Transparent Pricing
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/35 text-xs font-mono uppercase text-amber-300 mb-4 shadow-[0_0_20px_rgba(245,158,11,0.25)]">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            Simple Transparent Access
           </div>
           <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-4">
-            Unlock Financial Intelligence
+            UNLOCK THE <span className="text-amber-400">BLUEPRINT</span>
           </h2>
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Zero recurring subscription lock-ins. Pay once per tier and get immediate, permanent access to downloadable business PDFs and Excel financial models.
+            Zero recurring subscription traps. Pay once per tier and get immediate, permanent access to downloadable trading blueprints, business guides, and Excel models.
           </p>
         </motion.div>
 
@@ -73,20 +73,20 @@ export const HomePricingSection: React.FC<HomePricingSectionProps> = ({ initialP
                 whileHover={{ y: -8, transition: { duration: 0.25 } }}
                 className={`relative rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 ${
                   isPopular
-                    ? 'border-2 border-cyan-400 bg-gradient-to-b from-cyan-950/40 via-slate-950/80 to-[#070c1e] shadow-[0_0_40px_rgba(34,211,238,0.25)] md:-translate-y-2'
-                    : 'border border-slate-800/90 bg-slate-950/70 hover:border-slate-700'
+                    ? 'border-2 border-amber-400 bg-gradient-to-b from-amber-950/30 via-[#0d121f] to-[#070b14] shadow-[0_0_40px_rgba(245,158,11,0.25)] md:-translate-y-2'
+                    : 'border border-white/10 bg-[#0a0e19]/80 hover:border-white/20'
                 }`}
               >
                 {/* Most Popular Badge */}
                 {isPopular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-mono font-black uppercase bg-gradient-to-r from-cyan-400 to-indigo-400 text-slate-950 shadow-[0_0_15px_rgba(34,211,238,0.6)] tracking-wider">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-mono font-black uppercase bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.6)] tracking-wider">
                     {plan.badge || 'Most Popular'}
                   </div>
                 )}
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-mono uppercase tracking-widest text-cyan-400 font-bold">
+                    <span className="text-xs font-mono uppercase tracking-widest text-amber-400 font-bold">
                       Tier 0{idx + 1}
                     </span>
                     <span className="text-[10px] font-mono uppercase text-slate-400 px-2 py-0.5 rounded bg-slate-900 border border-slate-800">
@@ -111,20 +111,20 @@ export const HomePricingSection: React.FC<HomePricingSectionProps> = ({ initialP
                     </span>
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-2.5 text-xs text-slate-300 leading-relaxed">
-                        <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-slate-800/80">
+                <div className="pt-6 border-t border-white/10">
                   <button
                     onClick={() => handleSelectPlan(plan._id)}
                     className={`w-full py-3.5 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${
                       isPopular
-                        ? 'btn-gradient-primary shadow-[0_0_20px_rgba(99,102,241,0.5)]'
-                        : 'bg-slate-900 hover:bg-slate-850 text-white border border-slate-700/80 hover:border-cyan-400/50'
+                        ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:brightness-110'
+                        : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-amber-500/50'
                     }`}
                   >
                     <Lock className="w-3.5 h-3.5" />

@@ -17,27 +17,35 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-black text-slate-400 border-t border-cyan-500/20 relative overflow-hidden select-none">
+    <footer className="bg-black text-slate-400 border-t border-white/10 relative overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-900">
-          {/* Brand & Movement Slogan (matching frame_160.jpg) */}
+          {/* Brand & Movement Slogan */}
           <div className="lg:col-span-6 space-y-4">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center p-0.5 shadow-[0_0_15px_rgba(34,211,238,0.4)]">
-                <div className="w-full h-full bg-black rounded-[6px] flex items-center justify-center">
-                  <span className="font-mono text-cyan-400 font-bold text-xs">FQ</span>
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center p-[1px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+                <div className="w-full h-full bg-[#080b14] rounded-xl flex items-center justify-center font-black text-amber-400 text-xs">
+                  FQ
                 </div>
               </div>
-              <span className="text-xl font-black tracking-tight text-white uppercase group-hover:text-cyan-300 transition-colors">
-                FQore<span className="text-cyan-400">.</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-black tracking-tight text-white uppercase group-hover:text-amber-400 transition-colors">
+                  FQ<span className="text-amber-400">ore</span>
+                </span>
+                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase -mt-1">
+                  Core of Solutions
+                </span>
+              </div>
             </Link>
 
-            <h3 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white max-w-md leading-tight pt-2">
-              DISCOVER OUR EDUCATIONAL REVOLUTION MOVEMENT
+            <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white max-w-md leading-tight pt-2">
+              BUILD YOUR <span className="text-amber-400">BETTER FUTURE</span>
             </h3>
             <p className="text-xs text-slate-400 max-w-md font-light leading-relaxed">
-              An institutional-grade intelligence platform providing deep business revenue models, equity research, macroeconomic frameworks, and downloadable financial models.
+              Practical Knowledge &bull; Real Strategies &bull; Lasting Growth. Practical trading education, e-commerce startup scaling, downloadable PDF blueprints, and financial models.
+            </p>
+            <p className="text-xs font-mono text-amber-400/90">
+              Admin & Inquiries: <a href="mailto:fqorein@gmail.com" className="underline hover:text-white">fqorein@gmail.com</a>
             </p>
           </div>
 
