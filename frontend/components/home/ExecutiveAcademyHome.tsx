@@ -1108,85 +1108,48 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Right: Video Masterclass Terminal Mockup */}
-                      <div className="md:col-span-6 p-space-lg bg-primary-container text-surface-container-lowest flex flex-col justify-between">
+                      {/* Right: Video Masterclass Terminal with Real Cloudinary Video */}
+                      <div className="md:col-span-6 p-space-lg bg-[#070e1b] text-surface-container-lowest flex flex-col justify-between border-t md:border-t-0 md:border-l border-white/10">
                         <div>
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-error" />
-                              <span className="w-2.5 h-2.5 rounded-full bg-secondary-container" />
-                              <span className="w-2.5 h-2.5 rounded-full bg-surface-container-highest" />
+                              <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                              <span className="w-2.5 h-2.5 rounded-full bg-[#fcd997]" />
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                             </div>
-                            <span className="font-label-sm text-label-sm text-on-primary-container uppercase font-mono tracking-wider">
-                              Cohort Stream #108
+                            <span className="font-label-sm text-label-sm text-[#fcd997] uppercase font-mono tracking-wider font-bold">
+                              Live Masterclass Stream
                             </span>
                           </div>
 
-                          <div className="relative bg-tertiary-container rounded-lg p-4 overflow-hidden mb-4 shadow-inner border border-surface-container-lowest/10">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-label-sm text-label-sm text-secondary-container font-mono">
-                                ORDER_FLOW_DEPTH // VWAP BANDS
-                              </span>
-                              <span className="font-label-sm text-label-sm text-surface-container-lowest font-mono bg-surface-container-lowest/10 px-2 py-0.5 rounded">
-                                1080p 60fps
-                              </span>
-                            </div>
-
-                            {/* Candlestick chart simulation */}
-                            <div className="flex items-end justify-between h-28 pt-4 gap-1">
-                              <div className="w-full flex flex-col items-center justify-end h-full">
-                                <div className="w-0.5 h-6 bg-error" />
-                                <div className="w-2.5 h-12 bg-error rounded-sm" />
-                                <div className="w-0.5 h-4 bg-error" />
-                              </div>
-                              <div className="w-full flex flex-col items-center justify-end h-full">
-                                <div className="w-0.5 h-8 bg-secondary-container" />
-                                <div className="w-2.5 h-16 bg-secondary-container rounded-sm" />
-                                <div className="w-0.5 h-5 bg-secondary-container" />
-                              </div>
-                              <div className="w-full flex flex-col items-center justify-end h-full">
-                                <div className="w-0.5 h-3 bg-secondary-container" />
-                                <div className="w-2.5 h-20 bg-secondary-container rounded-sm" />
-                                <div className="w-0.5 h-6 bg-secondary-container" />
-                              </div>
-                              <div className="w-full flex flex-col items-center justify-end h-full">
-                                <div className="w-0.5 h-10 bg-error" />
-                                <div className="w-2.5 h-10 bg-error rounded-sm" />
-                                <div className="w-0.5 h-4 bg-error" />
-                              </div>
-                              <div className="w-full flex flex-col items-center justify-end h-full">
-                                <div className="w-0.5 h-4 bg-secondary-container" />
-                                <div className="w-2.5 h-24 bg-secondary-container rounded-sm" />
-                                <div className="w-0.5 h-2 bg-secondary-container" />
-                              </div>
-                            </div>
-
-                            {/* Video Controls Overlay */}
-                            <div className="mt-3 flex items-center gap-3">
-                              <button className="w-7 h-7 rounded-full bg-secondary-container text-primary-container flex items-center justify-center hover:scale-110 transition-transform">
-                                <span className="material-symbols-outlined text-[18px]">play_arrow</span>
-                              </button>
-                              <div className="flex-1 h-1 bg-surface-container-lowest/20 rounded-full overflow-hidden">
-                                <div className="w-3/5 h-full bg-secondary-container" />
-                              </div>
-                              <span className="font-label-sm text-label-sm text-on-primary-container font-mono">
-                                18:42 / 32:00
-                              </span>
-                            </div>
+                          <div className="relative bg-black rounded-xl overflow-hidden mb-4 shadow-2xl border border-white/15 group/video">
+                            <video
+                              controls
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              preload="auto"
+                              className="w-full h-auto aspect-video object-cover rounded-xl"
+                            >
+                              <source src="https://res.cloudinary.com/xbvjx6qb/video/upload/v1789135767/video.mp4" type="video/mp4" />
+                              <source src="/video.mp4" type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>
                           </div>
 
-                          <p className="font-body-sm text-body-sm text-on-primary-container">
+                          <p className="font-body-sm text-body-sm text-slate-300 leading-relaxed">
                             Interactive synchronized chapter indexing: Jump between the forensic PDF calculation lines
                             and corresponding live chart execution.
                           </p>
                         </div>
 
-                        <div className="pt-4 flex items-center justify-between border-t border-surface-container-lowest/10">
-                          <span className="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider font-semibold">
+                        <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-3">
+                          <span className="font-label-sm text-label-sm text-[#fcd997] uppercase tracking-wider font-semibold">
                             Institutional Class 04 of 12
                           </span>
-                          <span className="font-label-sm text-label-sm text-on-primary-container">
-                            Updated Today
+                          <span className="font-label-sm text-label-sm text-emerald-400 font-mono">
+                            1080p 60fps &bull; Cloudinary Stream
                           </span>
                         </div>
                       </div>
