@@ -142,15 +142,39 @@ export const ExecutiveAcademyHome: React.FC = () => {
   const [courseFlyoutOpen, setCourseFlyoutOpen] = useState(false);
   const [activeCourseTab, setActiveCourseTab] = useState('tab-business');
 
-  // Masterclass Video Sound State (Enabled by default)
+  // Masterclass Video Sound State (Enabled by default for one playthrough)
   const [masterclassSound, setMasterclassSound] = useState(true);
   const masterclassVideoRef = useRef<HTMLVideoElement>(null);
+  const hasAudioPlayedOnceRef = useRef(false);
+
+  // Stop audio after first playthrough, then let video loop silently
+  const handleVideoEnded = () => {
+    const video = masterclassVideoRef.current;
+    if (!video) return;
+    hasAudioPlayedOnceRef.current = true;
+    video.muted = true;
+    setMasterclassSound(false);
+    // Continue playing video silently in background
+    video.currentTime = 0;
+    video.play().catch(() => {});
+  };
+
+  const handleTimeUpdate = () => {
+    const video = masterclassVideoRef.current;
+    if (!video || hasAudioPlayedOnceRef.current) return;
+    // Guard: detect end of first playthrough and mute audio immediately
+    if (video.duration > 0 && video.currentTime >= video.duration - 0.4) {
+      hasAudioPlayedOnceRef.current = true;
+      video.muted = true;
+      setMasterclassSound(false);
+    }
+  };
 
   useEffect(() => {
     const video = masterclassVideoRef.current;
     if (!video) return;
 
-    // Set audio on by default
+    // Set audio on by default for the initial play
     video.muted = false;
     video.volume = 0.85;
 
@@ -160,9 +184,9 @@ export const ExecutiveAcademyHome: React.FC = () => {
         // If modern browser autoplay policy blocks unmuted audio before user interaction,
         // start playback and unmute on the very first user click/scroll
         video.muted = true;
-        video.play();
+        video.play().catch(() => {});
         const enableSoundOnGesture = () => {
-          if (masterclassVideoRef.current) {
+          if (masterclassVideoRef.current && !hasAudioPlayedOnceRef.current) {
             masterclassVideoRef.current.muted = false;
             setMasterclassSound(true);
           }
@@ -797,7 +821,8 @@ export const ExecutiveAcademyHome: React.FC = () => {
                 ref={masterclassVideoRef}
                 autoPlay
                 muted={!masterclassSound}
-                loop
+                onEnded={handleVideoEnded}
+                onTimeUpdate={handleTimeUpdate}
                 playsInline
                 preload="auto"
                 className="w-full h-full object-cover object-center brightness-75 contrast-110"
@@ -857,7 +882,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                   <span className="material-symbols-outlined text-[16px]">
                     {masterclassSound ? 'volume_up' : 'volume_off'}
                   </span>
-                  <span>{masterclassSound ? 'Sound ON (Default)' : 'Unmute Audio'}</span>
+                  <span>{masterclassSound ? 'Sound ON' : 'Audio Muted'}</span>
                 </button>
 
                 <a
