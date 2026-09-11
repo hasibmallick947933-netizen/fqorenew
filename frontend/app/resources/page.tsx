@@ -146,7 +146,6 @@ export default function ResourcesPage() {
   const handleDownloadClick = (e: React.MouseEvent, item: Content) => {
     e.preventDefault();
 
-    // Check if user has paid access or is admin
     const receipt = typeof window !== 'undefined' ? localStorage.getItem('fqore_receipt_token') : null;
     const unlocked = typeof window !== 'undefined' ? localStorage.getItem('fqore_unlocked_plans') : null;
 
@@ -198,29 +197,29 @@ export default function ResourcesPage() {
   ];
 
   return (
-    <div className="py-16 sm:py-24 min-h-screen bg-[#040813] text-slate-100">
+    <div className="py-16 sm:py-24 min-h-screen bg-white text-slate-900">
       <div className="max-w-7xl mx-auto px-6 lg:px-margin-desktop">
-        {/* Header */}
+        {/* Header with White Background and Light Gold Accents */}
         <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container/10 border border-secondary-container/30 text-xs font-mono uppercase text-secondary-container mb-4 shadow-[0_0_15px_rgba(254,222,178,0.15)]">
-            <span className="material-symbols-outlined text-[15px]">lock</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdfaf3] border border-[#d4af37]/40 text-xs font-mono uppercase text-[#9e7629] mb-4 shadow-sm">
+            <span className="material-symbols-outlined text-[15px] text-[#b8860b]">lock</span>
             Protected Institutional Library
           </div>
-          <h1 className="font-headline-lg text-headline-lg sm:text-display-lg text-surface-container-lowest tracking-tight mb-4">
-            Financial Models &amp; Resource Center
+          <h1 className="font-serif text-3xl sm:text-5xl font-semibold text-slate-950 tracking-tight mb-4">
+            Financial Models &amp; <span className="text-[#b8860b]">Resource Center</span>
           </h1>
-          <p className="font-body-lg text-body-lg text-on-primary-container leading-relaxed font-light">
+          <p className="font-body-lg text-body-lg text-slate-600 leading-relaxed font-light">
             Download verified dynamic three-statement financial models, forensic accounting checklists, valuation worksheets, and macroeconomic datasets. All downloads require verified tier enrollment.
           </p>
 
           {/* User Access Status Banner */}
-          <div className="mt-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-tertiary-container border border-surface-container-lowest/15 text-xs font-mono text-on-primary-container">
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#fcf9f2] border border-[#e8d5b5] text-xs font-mono text-[#8a6316]">
             <span
               className={`w-2 h-2 rounded-full ${
-                hasPaidAccess ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'
+                hasPaidAccess ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
               }`}
             />
-            <span>
+            <span className="font-medium">
               {hasPaidAccess
                 ? 'Institutional License: Active (Unlimited Downloads Unlocked)'
                 : 'Download Access: Locked (Enrollment in ₹59+ Plan Required)'}
@@ -229,7 +228,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-primary-container/90 p-4 sm:p-5 rounded-2xl border border-surface-container-lowest/15 mb-10 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl backdrop-blur-xl">
+        <div className="bg-[#f8fafd] p-4 sm:p-5 rounded-2xl border border-slate-200/90 mb-10 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto scrollbar-none pb-1 md:pb-0">
             {typePills.map((pill) => (
               <button
@@ -237,8 +236,8 @@ export default function ResourcesPage() {
                 onClick={() => setTypeFilter(pill.value)}
                 className={`px-4 py-2 rounded-xl text-xs font-label-md uppercase tracking-wider transition-all shrink-0 flex items-center gap-2 cursor-pointer ${
                   typeFilter === pill.value
-                    ? 'bg-secondary-container text-on-secondary-container font-bold shadow-md'
-                    : 'bg-tertiary-container border border-surface-container-lowest/10 text-on-primary-container hover:text-surface-container-lowest'
+                    ? 'bg-[#0a1628] text-[#fcd997] font-bold border border-[#fcd997]/40 shadow-md'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:text-[#9e7629] hover:border-[#d4af37]/40'
                 }`}
               >
                 <span className="material-symbols-outlined text-[16px]">{pill.icon}</span>
@@ -249,7 +248,7 @@ export default function ResourcesPage() {
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <form onSubmit={handleSearch} className="relative w-full md:w-64">
-              <span className="material-symbols-outlined text-[18px] text-on-primary-container absolute left-3.5 top-1/2 -translate-y-1/2">
+              <span className="material-symbols-outlined text-[18px] text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2">
                 search
               </span>
               <input
@@ -257,14 +256,14 @@ export default function ResourcesPage() {
                 placeholder="Search resources..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-xs bg-tertiary-container border border-surface-container-lowest/15 rounded-xl text-surface-container-lowest placeholder:text-on-primary-container/40 focus:outline-none focus:border-secondary-container font-body-sm"
+                className="w-full pl-10 pr-4 py-2 text-xs bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#b8860b] font-body-sm shadow-sm"
               />
             </form>
 
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-tertiary-container border border-surface-container-lowest/15 rounded-xl text-xs font-label-sm uppercase tracking-wider text-surface-container-lowest px-3 py-2.5 focus:outline-none focus:border-secondary-container cursor-pointer"
+              className="bg-white border border-slate-200 rounded-xl text-xs font-label-sm uppercase tracking-wider text-slate-800 px-3 py-2.5 focus:outline-none focus:border-[#b8860b] cursor-pointer shadow-sm"
             >
               <option value="newest">Newest First</option>
               <option value="popular">Most Downloaded</option>
@@ -273,13 +272,13 @@ export default function ResourcesPage() {
           </div>
         </div>
 
-        {/* Resources Grid: Crisp White Dossier Cards for Contrast */}
+        {/* Resources Grid: Blue Colour Cards with Light Gold Letters */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="h-64 rounded-3xl bg-white/10 border border-white/20 animate-pulse"
+                className="h-64 rounded-3xl bg-[#0a1628]/40 border border-[#d4af37]/20 animate-pulse"
               />
             ))}
           </div>
@@ -288,11 +287,11 @@ export default function ResourcesPage() {
             {resources.map((item) => (
               <div
                 key={item._id}
-                className="bg-white text-slate-900 border border-slate-200/90 rounded-3xl p-7 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_45px_rgba(0,0,0,0.35)] transition-all duration-300 group"
+                className="bg-[#0a1628] text-[#fcd997] border border-[#d4af37]/30 rounded-3xl p-7 flex flex-col justify-between shadow-xl hover:shadow-[0_20px_45px_rgba(10,22,40,0.45)] hover:border-[#fcd997]/60 transition-all duration-300 group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-[#0d1c32] text-secondary-container">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[10px] font-mono uppercase font-bold bg-[#132742] text-[#fcd997] border border-[#fcd997]/30">
                       <span className="material-symbols-outlined text-[14px]">
                         {item.contentType === 'excel' || item.contentType === 'csv'
                           ? 'table_chart'
@@ -303,47 +302,52 @@ export default function ResourcesPage() {
                       {item.contentType.toUpperCase()}
                     </span>
 
-                    <span className="text-[11px] font-mono text-slate-500 flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">folder_zip</span>
+                    <span className="text-[11px] font-mono text-[#fcd997]/80 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px] text-[#fcd997]">folder_zip</span>
                       {formatBytes(item.mediaDetails?.size)}
                     </span>
                   </div>
 
-                  <h3 className="font-headline-sm text-headline-sm text-slate-950 mb-2 leading-snug line-clamp-2 group-hover:text-amber-800 transition-colors">
+                  {/* Title in Light Gold */}
+                  <h3 className="font-serif text-xl font-medium text-[#fcd997] mb-2 leading-snug line-clamp-2 group-hover:text-white transition-colors">
                     {item.title}
                   </h3>
-                  <p className="font-body-sm text-body-sm text-slate-600 line-clamp-3 leading-relaxed mb-6">
+
+                  {/* Description in Light Champagne Gold */}
+                  <p className="font-body-sm text-body-sm text-[#fae8c8]/85 line-clamp-3 leading-relaxed mb-6 font-light">
                     {item.description}
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                  {/* Meta row in Light Gold */}
+                  <div className="pt-3 border-t border-[#d4af37]/20 flex items-center justify-between text-[11px] text-[#ecd4a2] font-mono">
                     <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[13px]">calendar_today</span>
+                      <span className="material-symbols-outlined text-[13px] text-[#fcd997]">calendar_today</span>
                       {new Date(item.publishedAt || item.createdAt).toLocaleDateString()}
                     </span>
                     <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">visibility</span>
+                      <span className="material-symbols-outlined text-[14px] text-[#fcd997]">visibility</span>
                       {item.views || 340} views
                     </span>
                   </div>
 
                   <div className="flex gap-2">
+                    {/* Inspect button: Blue card border with Light Gold Letters */}
                     <Link
                       href={`/content/${item.slug}`}
-                      className="flex-1 text-center py-3 px-3 rounded-xl font-label-md text-label-md uppercase tracking-wider border border-slate-300 text-slate-700 hover:bg-slate-50 transition-all font-semibold"
+                      className="flex-1 text-center py-3 px-3 rounded-xl font-label-md text-label-md uppercase tracking-wider border border-[#d4af37]/40 text-[#fcd997] hover:bg-[#d4af37]/10 transition-all font-semibold"
                     >
                       Inspect
                     </Link>
 
-                    {/* Download Button gated behind payment */}
+                    {/* Unlock / Download Button: Light Gold button */}
                     <button
                       onClick={(e) => handleDownloadClick(e, item)}
                       className={`px-4 py-3 rounded-xl font-label-md text-label-md uppercase tracking-wider font-bold flex items-center justify-center gap-1.5 shadow-md transition-all shrink-0 cursor-pointer ${
                         hasPaidAccess
-                          ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                          : 'bg-[#0d1c32] text-secondary-container hover:bg-slate-900 ring-1 ring-amber-400/40'
+                          ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                          : 'bg-[#fcd997] text-[#1a1200] hover:bg-[#fad080] shadow-[0_0_20px_rgba(252,217,151,0.25)]'
                       }`}
                       title={hasPaidAccess ? 'Download Asset' : 'Unlock with Plan to Download'}
                     >
@@ -358,11 +362,11 @@ export default function ResourcesPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 rounded-3xl bg-white text-slate-900 border border-slate-200">
-            <span className="material-symbols-outlined text-[48px] text-slate-400 mx-auto mb-3 block">
+          <div className="text-center py-20 rounded-3xl bg-[#0a1628] text-[#fcd997] border border-[#d4af37]/30">
+            <span className="material-symbols-outlined text-[48px] text-[#fcd997]/50 mx-auto mb-3 block">
               folder_off
             </span>
-            <p className="font-headline-sm text-headline-sm text-slate-900 font-medium">
+            <p className="font-serif text-xl text-[#fcd997] font-medium">
               No institutional resources match this filter.
             </p>
             <button
@@ -370,7 +374,7 @@ export default function ResourcesPage() {
                 setTypeFilter('all');
                 setSearch('');
               }}
-              className="mt-3 text-xs font-mono text-amber-700 hover:underline uppercase tracking-wider"
+              className="mt-3 text-xs font-mono text-[#fcd997] hover:underline uppercase tracking-wider"
             >
               Reset Filters &rarr;
             </button>
