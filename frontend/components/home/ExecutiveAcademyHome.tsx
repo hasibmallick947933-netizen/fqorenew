@@ -177,14 +177,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
     }
   }, []);
 
-  // Scroll Position for Dynamic Background Video Animation
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // FAQ Accordion State
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -797,16 +789,10 @@ export const ExecutiveAcademyHome: React.FC = () => {
       {/* MAIN BODY CONTAINER */}
       <main className="w-full pt-20 bg-surface min-h-screen">
         <div className="flex flex-col w-full">
-          {/* 1. CINEMATIC SCROLL-ANIMATED VIDEO HERO BACKGROUND */}
+          {/* 1. CINEMATIC VIDEO HERO BACKGROUND */}
           <section className="relative w-full h-[90vh] min-h-[640px] max-h-[960px] overflow-hidden bg-black flex items-center justify-center">
-            {/* Full-bleed Background Video with Scroll-Driven Scale & Parallax Animation */}
-            <div
-              className="absolute inset-0 w-full h-full will-change-transform pointer-events-none"
-              style={{
-                transform: `scale(${1 + Math.min(scrollY * 0.0006, 0.25)}) translateY(${scrollY * 0.18}px)`,
-                transition: 'transform 0.1s ease-out',
-              }}
-            >
+            {/* Full-bleed Static Background Video */}
+            <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
               <video
                 ref={masterclassVideoRef}
                 autoPlay
