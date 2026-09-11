@@ -145,6 +145,41 @@ export const ExecutiveAcademyHome: React.FC = () => {
   // 3D Perspective View for Digital Slate
   const [perspectiveView, setPerspectiveView] = useState<'iso' | 'flat' | 'tilt'>('iso');
 
+  // Masterclass Video Sound State (Enabled by default)
+  const [masterclassSound, setMasterclassSound] = useState(true);
+  const masterclassVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = masterclassVideoRef.current;
+    if (!video) return;
+
+    // Set audio on by default
+    video.muted = false;
+    video.volume = 0.85;
+
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // If modern browser autoplay policy blocks unmuted audio before user interaction,
+        // start playback and unmute on the very first user click/scroll
+        video.muted = true;
+        video.play();
+        const enableSoundOnGesture = () => {
+          if (masterclassVideoRef.current) {
+            masterclassVideoRef.current.muted = false;
+            setMasterclassSound(true);
+          }
+          window.removeEventListener('click', enableSoundOnGesture);
+          window.removeEventListener('scroll', enableSoundOnGesture);
+          window.removeEventListener('touchstart', enableSoundOnGesture);
+        };
+        window.addEventListener('click', enableSoundOnGesture, { once: true });
+        window.addEventListener('scroll', enableSoundOnGesture, { once: true });
+        window.addEventListener('touchstart', enableSoundOnGesture, { once: true });
+      });
+    }
+  }, []);
+
   // FAQ Accordion State
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
@@ -1061,72 +1096,109 @@ export const ExecutiveAcademyHome: React.FC = () => {
                   >
                     <div className="absolute -inset-4 bg-gradient-to-r from-secondary-container/30 to-primary-container/20 rounded-2xl blur-xl -z-10" />
 
-                    <div className="grid grid-cols-1 md:grid-cols-12 bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden border border-surface-container-highest">
-                      {/* Left: Digital E-Book Page */}
-                      <div className="md:col-span-6 p-space-lg bg-surface flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between pb-3 mb-4 border-b border-surface-container-high">
-                            <span className="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">
-                              Dossier Vol. VIII - Page 42
-                            </span>
-                            <span className="font-label-sm text-label-sm text-on-surface-variant font-mono">
-                              SEC Form 10-K Forensic
-                            </span>
-                          </div>
-
-                          <h3 className="font-headline-sm text-headline-sm text-primary mb-2">
-                            Deconstructing the High-Retention Enterprise Engine
-                          </h3>
-
-                          <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-4">
-                            Examine net revenue retention rates exceeding 135%. When customer acquisition costs
-                            amortization exceeds 18 months, working capital cycles demand synthetic debt buffering.
-                          </p>
-
-                          {/* Data Table Breakdown */}
-                          <div className="bg-surface-container-lowest p-3 rounded-lg shadow-sm space-y-2 font-mono text-body-sm border border-surface-container-high">
-                            <div className="flex justify-between text-on-surface-variant">
-                              <span>Gross Margin Moat:</span>
-                              <span className="text-primary font-bold">81.4%</span>
-                            </div>
-                            <div className="flex justify-between text-on-surface-variant">
-                              <span>Magic Number:</span>
-                              <span className="text-primary font-bold">1.48x</span>
-                            </div>
-                            <div className="flex justify-between text-on-surface-variant">
-                              <span>Rule of 40 Index:</span>
-                              <span className="text-secondary font-bold">54.2% (Elite)</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="pt-4 flex items-center justify-between text-on-surface-variant">
-                          <span className="font-label-sm text-label-sm">Click to flip dossier sheet</span>
-                          <span className="material-symbols-outlined text-secondary text-[20px]">
-                            auto_stories
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Right: Video Masterclass Terminal with Real Cloudinary Video */}
-                      <div className="md:col-span-6 p-space-lg bg-[#070e1b] text-surface-container-lowest flex flex-col justify-between border-t md:border-t-0 md:border-l border-white/10">
+                    <div className="grid grid-cols-1 md:grid-cols-12 bg-[#040914] rounded-2xl shadow-2xl overflow-hidden border border-white/15">
+                      {/* Left: Video of Profit of Trading */}
+                      <div className="md:col-span-6 p-space-lg bg-[#060c18] text-surface-container-lowest flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/10">
                         <div>
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
                               <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
                               <span className="w-2.5 h-2.5 rounded-full bg-[#fcd997]" />
                               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                              <span className="font-label-sm text-label-sm text-emerald-400 uppercase font-mono tracking-wider font-bold ml-1">
+                                Profit of Trading
+                              </span>
                             </div>
-                            <span className="font-label-sm text-label-sm text-[#fcd997] uppercase font-mono tracking-wider font-bold">
-                              Live Masterclass Stream
+                            <span className="font-label-sm text-label-sm px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-mono font-bold border border-emerald-500/40">
+                              +₹1,48,650 (+38.4%)
                             </span>
+                          </div>
+
+                          <div className="relative bg-black rounded-xl overflow-hidden mb-4 shadow-2xl border border-emerald-500/30 group/profit">
+                            <video
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              preload="auto"
+                              className="w-full h-auto aspect-video object-cover rounded-xl"
+                            >
+                              <source src="/trading-profit.mp4" type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>
+
+                            {/* Live Trading Telemetry HUD Overlay */}
+                            <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded bg-black/75 backdrop-blur-md border border-emerald-400/40 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                              <span>LIVE P&amp;L // TARGET 02 HIT</span>
+                            </div>
+                            <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono text-[#fcd997] pointer-events-none">
+                              R:R 1:3.4 &bull; SIZING 2%
+                            </div>
+                          </div>
+
+                          <p className="font-body-sm text-body-sm text-slate-300 leading-relaxed">
+                            Live systematic trade execution: Real market order flow, momentum confirmation, and disciplined profit capture in action.
+                          </p>
+                        </div>
+
+                        <div className="pt-4 flex items-center justify-between border-t border-white/10 mt-3 text-xs font-mono">
+                          <span className="text-emerald-400 font-bold uppercase tracking-wider">
+                            Verified Execution Run
+                          </span>
+                          <span className="text-slate-400">
+                            60fps High Precision
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Right: Masterclass Video with Sound by Default */}
+                      <div className="md:col-span-6 p-space-lg bg-[#070e1b] text-surface-container-lowest flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                              <span className="w-2.5 h-2.5 rounded-full bg-[#fcd997]" />
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                              <span className="font-label-sm text-label-sm text-[#fcd997] uppercase font-mono tracking-wider font-bold ml-1">
+                                Masterclass Video
+                              </span>
+                            </div>
+
+                            {/* Sound Toggle Button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const next = !masterclassSound;
+                                setMasterclassSound(next);
+                                if (masterclassVideoRef.current) {
+                                  masterclassVideoRef.current.muted = !next;
+                                  if (next) {
+                                    masterclassVideoRef.current.volume = 0.9;
+                                    masterclassVideoRef.current.play();
+                                  }
+                                }
+                              }}
+                              className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold tracking-wider flex items-center gap-1.5 transition-all cursor-pointer border ${
+                                masterclassSound
+                                  ? 'bg-[#fcd997] text-[#1a1200] border-[#fcd997] shadow-sm'
+                                  : 'bg-white/10 text-slate-300 border-white/20 hover:bg-white/20'
+                              }`}
+                              title={masterclassSound ? 'Sound is Enabled (Click to Mute)' : 'Click to Turn Sound On'}
+                            >
+                              <span className="material-symbols-outlined text-[14px]">
+                                {masterclassSound ? 'volume_up' : 'volume_off'}
+                              </span>
+                              <span>{masterclassSound ? 'Sound ON' : 'Sound Muted'}</span>
+                            </button>
                           </div>
 
                           <div className="relative bg-black rounded-xl overflow-hidden mb-4 shadow-2xl border border-white/15 group/video">
                             <video
+                              ref={masterclassVideoRef}
                               controls
                               autoPlay
-                              muted
+                              muted={!masterclassSound}
                               loop
                               playsInline
                               preload="auto"
@@ -1140,7 +1212,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
                           <p className="font-body-sm text-body-sm text-slate-300 leading-relaxed">
                             Interactive synchronized chapter indexing: Jump between the forensic PDF calculation lines
-                            and corresponding live chart execution.
+                            and corresponding live chart execution with sound.
                           </p>
                         </div>
 
@@ -1149,7 +1221,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                             Institutional Class 04 of 12
                           </span>
                           <span className="font-label-sm text-label-sm text-emerald-400 font-mono">
-                            1080p 60fps &bull; Cloudinary Stream
+                            {masterclassSound ? '🔊 Audio Playing' : '1080p 60fps'} &bull; Cloudinary
                           </span>
                         </div>
                       </div>
