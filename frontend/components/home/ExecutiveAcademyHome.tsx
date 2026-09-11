@@ -269,19 +269,16 @@ export const ExecutiveAcademyHome: React.FC = () => {
       ctx.fillStyle = '#fedeb2';
       ctx.fill();
 
+      ctx.fillStyle = '#fedeb2';
+      ctx.font = 'bold 84px "Playfair Display", serif';
+      ctx.fillText('FQORE', 512, 360);
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 64px "Playfair Display", serif';
-      ctx.fillText('THE INSTITUTIONAL', 512, 330);
-      ctx.fillStyle = '#fce5c8';
-      ctx.font = 'bold 74px "Playfair Display", serif';
-      ctx.fillText('PRICE ACTION', 512, 420);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 54px "Playfair Display", serif';
-      ctx.fillText('& DCF PLAYBOOK', 512, 500);
+      ctx.font = 'bold 76px "Playfair Display", serif';
+      ctx.fillText('LEARNING', 512, 455);
 
-      ctx.fillStyle = '#9cb3d5';
-      ctx.font = '500 24px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('QUANTITATIVE ORDER FLOW & FORENSIC VALUATION', 512, 560);
+      ctx.fillStyle = '#dfb875';
+      ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('INSTITUTIONAL TRADING & BUSINESS BLUEPRINT', 512, 530);
 
       // Candlestick Emblem
       ctx.save();
@@ -367,7 +364,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
       ctx.textAlign = 'center';
       ctx.fillStyle = '#fce5c8';
       ctx.font = 'bold 36px "Playfair Display", serif';
-      ctx.fillText('FQORE • THE PRICE ACTION & DCF PLAYBOOK', 0, 12);
+      ctx.fillText('FQORE • FQORE LEARNING', 0, 12);
       ctx.restore();
 
       return new THREE.CanvasTexture(c);
@@ -390,8 +387,8 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
       ctx.fillStyle = '#dfb875';
       ctx.textAlign = 'center';
-      ctx.font = 'bold 32px "Playfair Display", serif';
-      ctx.fillText('INSTITUTIONAL SYLLABUS', 512, 220);
+      ctx.font = 'bold 34px "Playfair Display", serif';
+      ctx.fillText('FQORE LEARNING', 512, 220);
 
       ctx.fillStyle = '#a9bacc';
       ctx.font = '24px "Inter", sans-serif';
@@ -929,14 +926,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
                       <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-primary-container/70 via-transparent to-transparent" />
 
-                      {/* Floating Live Ticker Chip */}
-                      <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-tertiary-container/90 backdrop-blur-md text-surface-container-lowest shadow-md pointer-events-none border border-surface-container-lowest/10">
-                        <span className="w-2 h-2 rounded-full bg-secondary-container animate-ping" />
-                        <span className="font-label-sm text-label-sm uppercase tracking-wider">
-                          360° INTERACTIVE 3D PLAYBOOK
-                        </span>
-                      </div>
-
                       {/* Controls */}
                       <div className="absolute top-4 right-4 flex items-center gap-1.5 z-20">
                         <button
@@ -957,14 +946,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         </button>
                       </div>
 
-                      {/* Drag Hint Badge */}
-                      <div className="absolute top-16 left-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-black/40 backdrop-blur-md text-on-primary-container text-[11px] font-mono pointer-events-none">
-                        <span className="material-symbols-outlined text-[14px] text-secondary-container">
-                          touch_app
-                        </span>
-                        <span>Drag to rotate 360° • Pinch to zoom</span>
-                      </div>
-
                       {/* Terminal Overlay Card */}
                       <div className="absolute bottom-3 inset-x-3 p-space-md rounded-xl bg-primary-container/95 backdrop-blur-lg shadow-xl border border-surface-container-lowest/10 z-10 pointer-events-auto">
                         <div className="flex items-center justify-between pb-2 mb-2 border-b border-surface-container-lowest/10">
@@ -973,7 +954,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                               candlestick_chart
                             </span>
                             <span className="font-title-md text-title-md text-surface-container-lowest">
-                              The Institutional Price Action &amp; DCF Playbook
+                              FQore Learning
                             </span>
                           </div>
                           <span className="font-label-sm text-label-sm text-secondary-container font-semibold">

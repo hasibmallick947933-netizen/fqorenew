@@ -112,14 +112,11 @@ export const Blueprint3DMockup: React.FC<Blueprint3DMockupProps> = ({ onOpenPrev
 
           <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent my-3" />
 
-          <div className="text-xl font-black uppercase tracking-tight text-white leading-tight">
-            TRADING & BUSINESS <br />
-            <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-              BLUEPRINT
-            </span>
+          <div className="text-2xl font-black uppercase tracking-tight text-white leading-tight">
+            FQORE <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(245,158,11,0.4)]">LEARNING</span>
           </div>
-          <p className="text-xs text-slate-400 mt-2 max-w-[240px] font-light">
-            Price Action • Order Flow • Risk Management • E-Commerce Scalability
+          <p className="text-xs text-amber-300/90 mt-1 font-semibold tracking-wide uppercase">
+            Trading & Business Blueprint
           </p>
         </div>
 
