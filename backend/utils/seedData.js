@@ -527,6 +527,148 @@ Always order a production sample before placing a commercial batch. Request supp
       await Plan.insertMany(plansData);
       console.log('Successfully seeded 3 default pricing plans (Starter ₹59, Growth ₹99, Premium ₹149).');
     }
+
+    // 4. Seed Courses
+    const Course = require('../models/Course');
+    const existingCoursesCount = await Course.countDocuments();
+    if (existingCoursesCount === 0) {
+      const initialCourses = [
+        {
+          title: 'Unit Economics, SaaS Margins & Durable Moats',
+          slug: 'unit-economics-saas-margins-moats',
+          moduleNum: 'Core Module 01',
+          description:
+            'Examine the anatomical breakdown of recurring revenue engines. Master the mathematics of customer lifetime value (LTV), payback period optimization, and switching-cost moats.',
+          category: 'Business Models',
+          level: 'Executive',
+          duration: '6.5 Hours Masterclass',
+          deliverables: [
+            '114-page Executive Dossier PDF',
+            'Dynamic Cohort Retention Calculator (.xlsx)',
+            '3 Real-World Startup Unit Teardowns',
+            'Video Lecture: Scaling from 0 to ₹10Cr ARR',
+          ],
+          pricing: {
+            starter: { price: 59, features: ['114-page Executive Dossier PDF', 'Web Reader Access'] },
+            growth: { price: 99, features: ['Dossier PDF + Dynamic Cohort XLSX', 'Startup Unit Teardowns', 'Priority Email Support'] },
+            premium: { price: 149, features: ['All Dossiers + Cohort XLSX + Video Lecture', 'Direct Editorial Q&A', 'Lifetime Revisions'] },
+          },
+          order: 1,
+        },
+        {
+          title: 'Microstructure, Order Flow & Institutional Liquidity Pools',
+          slug: 'order-flow-microstructure-liquidity',
+          moduleNum: 'Core Module 02',
+          description:
+            'Unpack how Tier-1 institutions conceal high-volume orders. Learn how to decode the consolidated tape, identify gamma squeezes, and trade along high-probability auction volume profiles.',
+          category: 'Stock Market',
+          level: 'Executive',
+          duration: '8.0 Hours Masterclass',
+          deliverables: [
+            'Market Microstructure Primer (PDF)',
+            'Volume Profile & Level 2 Cheatsheet',
+            'Live Pre-Market Execution Rules',
+            'Video Lecture: Institutional Tape Reading',
+          ],
+          pricing: {
+            starter: { price: 59, features: ['Microstructure Primer PDF', 'Level 2 Cheatsheet'] },
+            growth: { price: 99, features: ['Primer PDF + Tape Reading Guide', 'Volume Profile Templates', 'Trade Rules'] },
+            premium: { price: 149, features: ['Complete Suite + Tape Reading Video Masterclass', 'Execution Playbook', 'Direct Q&A'] },
+          },
+          order: 2,
+        },
+        {
+          title: 'Corporate Teardowns & Forensic Revenue Autopsies',
+          slug: 'corporate-teardowns-revenue-autopsies',
+          moduleNum: 'Core Module 03',
+          description:
+            'Go behind glossy investor relations slide decks. We execute rigorous teardowns of conglomerate balance sheets, analyzing concealed liabilities, off-balance sheet SPVs, and real cash yields.',
+          category: 'Companies',
+          level: 'Executive',
+          duration: '7.0 Hours Masterclass',
+          deliverables: [
+            '8 Enterprise Case Studies (PDF Teardowns)',
+            'Working Capital Analyzer Spreadsheet',
+            'Due Diligence Checklist (Institutional Grade)',
+            'Video Lecture: Spotting Accounting Gimmicks',
+          ],
+          pricing: {
+            starter: { price: 59, features: ['8 Enterprise Case Study Briefs (PDF)', 'Web Reader Access'] },
+            growth: { price: 99, features: ['8 Case Studies + Working Capital Analyzer XLSX', 'Forensic Audit Checklist'] },
+            premium: { price: 149, features: ['Full Case Studies + Working Capital XLSX + Video Lecture', 'Direct Advisory Access'] },
+          },
+          order: 3,
+        },
+        {
+          title: 'Discounted Cash Flow (DCF) & Sensitivity Valuation',
+          slug: 'dcf-valuation-sensitivity-models',
+          moduleNum: 'Core Module 04',
+          description:
+            'Build industrial-grade valuation models from raw financial statements. Master dynamic WACC calculations, terminal multiple assumptions, and Monte Carlo sensitivity ranges.',
+          category: 'Investing & DCF',
+          level: 'Executive',
+          duration: '9.0 Hours Masterclass',
+          deliverables: [
+            'Automated 3-Statement Financial Model',
+            'WACC & Beta Derivation Template',
+            '2-Way Data Table Sensitivity Guide',
+            'Video Lecture: Wall Street DCF Walkthrough',
+          ],
+          pricing: {
+            starter: { price: 59, features: ['DCF Valuation Primer PDF', 'Beta Formula Guide'] },
+            growth: { price: 99, features: ['Automated 3-Statement Model (.xlsx)', 'WACC Calculator', '2-Way Sensitivity Table'] },
+            premium: { price: 149, features: ['Complete Financial Model Suite + Wall Street Walkthrough Video', 'Unrestricted Commercial Use'] },
+          },
+          order: 4,
+        },
+        {
+          title: 'Execution Mechanics & Algorithmic Setups',
+          slug: 'execution-mechanics-algorithmic-setups',
+          moduleNum: 'Core Module 05',
+          description:
+            'Transition from discretionary guessing to high-expectancy algorithmic rules. Structure systematic risk protocols, Kelly criterion position sizing, and maximum drawdown circuit breakers.',
+          category: 'Trading Systems',
+          level: 'Executive',
+          duration: '7.5 Hours Masterclass',
+          deliverables: [
+            'Daily Trading Journal & Metrics Sheet',
+            'Algorithmic Ruleset Playbook PDF',
+            'Risk of Ruin & Monte Carlo Simulators',
+            'Video Lecture: The Systematic Trader Mindset',
+          ],
+          pricing: {
+            starter: { price: 59, features: ['Algorithmic Ruleset Playbook PDF', 'Position Sizing Rules'] },
+            growth: { price: 99, features: ['Playbook PDF + Daily Trading Journal XLSX', 'Monte Carlo Simulators'] },
+            premium: { price: 149, features: ['Complete Playbook + Journal + Mindset Video Masterclass', 'Direct Strategy Review'] },
+          },
+          order: 5,
+        },
+        {
+          title: 'Forensic Accounting & Corporate Failure Autopsies',
+          slug: 'forensic-accounting-market-autopsies',
+          moduleNum: 'Core Module 06',
+          description:
+            'Post-mortem examinations of high-profile corporate collapses and miraculous turnarounds. Discover the early-warning operational indicators that conventional equity analysts missed completely.',
+          category: 'Case Studies',
+          level: 'Executive',
+          duration: '6.0 Hours Masterclass',
+          deliverables: [
+            '6 Complete Corporate Autopsy Briefs',
+            'Red-Flag Forensic Audit Checklist',
+            'Insider Trading & Buyback Tracker',
+            'Video Lecture: The Anatomy of a Collapse',
+          ],
+          pricing: {
+            starter: { price: 59, features: ['6 Corporate Autopsy Briefs (PDF)', 'Web Reader Access'] },
+            growth: { price: 99, features: ['6 Autopsies + Red-Flag Forensic Audit Checklist', 'Insider Tracker Spreadsheet'] },
+            premium: { price: 149, features: ['All 6 Autopsies + Audit Checklist + Anatomy of Collapse Video', 'Direct Case Q&A'] },
+          },
+          order: 6,
+        },
+      ];
+      await Course.insertMany(initialCourses);
+      console.log('Successfully seeded 6 institutional courses with 3-tier pricing.');
+    }
   } catch (error) {
     console.error('Seed execution error:', error);
   }

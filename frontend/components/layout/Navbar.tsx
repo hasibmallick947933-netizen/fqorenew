@@ -120,24 +120,32 @@ export const Navbar: React.FC = () => {
             onMouseEnter={() => setCoursesDropdownOpen(true)}
             onMouseLeave={() => setCoursesDropdownOpen(false)}
           >
-            <button
-              type="button"
-              onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
-              className={`flex items-center gap-space-xs font-label-md text-label-md uppercase tracking-wider transition-colors ${
-                coursesDropdownOpen || courseModules.some((c) => pathname.startsWith(c.href))
-                  ? 'text-secondary-container font-semibold'
-                  : 'text-on-primary-container hover:text-surface-container-lowest'
-              }`}
-            >
-              <span>COURSES</span>
-              <span
-                className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
-                  coursesDropdownOpen ? 'rotate-180 text-secondary-container' : ''
+            <div className="flex items-center gap-0.5">
+              <Link
+                href="/courses"
+                className={`font-label-md text-label-md uppercase tracking-wider transition-colors ${
+                  pathname === '/courses' || courseModules.some((c) => pathname.startsWith(c.href))
+                    ? 'text-secondary-container font-semibold'
+                    : 'text-on-primary-container hover:text-surface-container-lowest'
                 }`}
               >
-                expand_more
-              </span>
-            </button>
+                COURSES
+              </Link>
+              <button
+                type="button"
+                onClick={() => setCoursesDropdownOpen(!coursesDropdownOpen)}
+                className="text-on-primary-container hover:text-secondary-container p-0.5"
+                aria-label="Toggle courses dropdown"
+              >
+                <span
+                  className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
+                    coursesDropdownOpen ? 'rotate-180 text-secondary-container' : ''
+                  }`}
+                >
+                  expand_more
+                </span>
+              </button>
+            </div>
 
             {/* Dropdown Menu */}
             {coursesDropdownOpen && (
@@ -147,9 +155,13 @@ export const Navbar: React.FC = () => {
                     <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary-container">
                       EDUCATIONAL CURRICULUM
                     </span>
-                    <span className="font-label-sm text-label-sm uppercase text-on-tertiary-container tracking-wider">
-                      6 Core Institutional Syllabi
-                    </span>
+                    <Link
+                      href="/courses"
+                      onClick={() => setCoursesDropdownOpen(false)}
+                      className="font-label-sm text-label-sm uppercase text-secondary-container hover:underline tracking-wider font-semibold"
+                    >
+                      View All Courses Catalog &rarr;
+                    </Link>
                   </div>
 
                   <div className="grid grid-cols-2 gap-x-space-lg gap-y-space-md">
@@ -333,6 +345,14 @@ export const Navbar: React.FC = () => {
             className="block py-2 text-sm font-label-md uppercase tracking-wider text-on-primary-container hover:text-surface-container-lowest"
           >
             How It Works
+          </Link>
+
+          <Link
+            href="/courses"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block py-2 text-sm font-label-md uppercase tracking-wider text-secondary-container font-semibold"
+          >
+            All Courses Catalog &rarr;
           </Link>
 
           <div className="pt-2 border-t border-surface-container-lowest/10">

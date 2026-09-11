@@ -654,13 +654,19 @@ export const ExecutiveAcademyHome: React.FC = () => {
             </Link>
 
             {/* Courses Dropdown */}
-            <div className="relative group py-space-sm">
+            <div className="relative group py-space-sm flex items-center gap-1">
+              <Link
+                href="/courses"
+                className="text-secondary-container font-label-md text-label-md uppercase tracking-wider transition-colors hover:underline"
+              >
+                COURSES
+              </Link>
               <button
                 type="button"
                 onClick={() => setCourseFlyoutOpen(!courseFlyoutOpen)}
-                className="flex items-center gap-space-xs text-secondary-container font-label-md text-label-md uppercase tracking-wider transition-colors"
+                className="flex items-center text-secondary-container font-label-md text-label-md uppercase tracking-wider transition-colors p-0.5"
+                aria-label="Toggle courses dropdown"
               >
-                <span className="font-label-md text-label-md">COURSES</span>
                 <span className="material-symbols-outlined text-[16px] transition-transform group-hover:rotate-180">
                   expand_more
                 </span>
@@ -672,9 +678,12 @@ export const ExecutiveAcademyHome: React.FC = () => {
                     <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary-container">
                       EDUCATIONAL CURRICULUM
                     </span>
-                    <span className="font-label-sm text-label-sm uppercase text-on-tertiary-container tracking-wider">
-                      Institutional Syllabi
-                    </span>
+                    <Link
+                      href="/courses"
+                      className="font-label-sm text-label-sm uppercase text-secondary-container hover:underline tracking-wider font-semibold"
+                    >
+                      View All Courses &rarr;
+                    </Link>
                   </div>
                   <div className="grid grid-cols-2 gap-x-space-lg gap-y-space-md">
                     {Object.values(COURSE_TABS).map((tab) => (

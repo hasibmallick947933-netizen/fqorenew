@@ -59,11 +59,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const adminNav = [
     { name: 'Analytics', href: '/admin', icon: LayoutDashboard, exact: true },
+    { name: 'Courses Manager', href: '/admin/courses', icon: FileText },
+    { name: 'Pricing Plans', href: '/admin/plans', icon: CreditCard },
     { name: 'Content Manager', href: '/admin/content', icon: FileText, exact: true },
     { name: 'Create Content', href: '/admin/content/create', icon: PlusCircle },
     { name: 'Categories', href: '/admin/categories', icon: FolderTree },
     { name: 'Media Library', href: '/admin/media', icon: ImageIcon },
-    { name: 'Pricing Plans', href: '/admin/plans', icon: CreditCard },
     { name: 'User Directory', href: '/admin/users', icon: Users },
   ];
 

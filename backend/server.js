@@ -23,6 +23,7 @@ const userRoutes = require('./routes/userRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const planRoutes = require('./routes/planRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const courseRoutes = require('./routes/courseRoutes');
 
 const app = express();
 
@@ -98,6 +99,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/courses', courseRoutes);
 
 // 404 Catch-all
 app.use('*', (req, res) => {

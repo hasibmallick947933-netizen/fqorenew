@@ -52,53 +52,52 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* 4 Core Pillars with 01., 02. styling */}
+        {/* 4 Core Pillars with Crisp White Surfaces for High Contrast */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
           {principles.map((item) => (
             <div
               key={item.num}
-              className="bg-primary-container/80 border border-surface-container-lowest/10 hover:border-secondary-container/40 rounded-2xl p-8 sm:p-10 shadow-xl backdrop-blur-xl transition-all duration-300 relative group"
+              className="bg-white text-slate-900 border border-slate-200/90 rounded-3xl p-8 sm:p-10 shadow-xl hover:shadow-2xl transition-all duration-300 relative group"
             >
               <div className="flex items-center justify-between mb-4">
-                <span className="font-headline-md text-headline-md text-secondary-container font-bold">
+                <span className="font-headline-md text-headline-md text-amber-800 font-bold">
                   {item.num}
                 </span>
-                <span className="font-label-sm text-label-sm uppercase tracking-widest text-on-primary-container px-2.5 py-1 rounded bg-surface-container-lowest/5 border border-surface-container-lowest/10">
+                <span className="font-label-sm text-label-sm uppercase tracking-widest text-slate-600 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 font-semibold">
                   {item.tag}
                 </span>
               </div>
-              <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest mb-3 group-hover:text-secondary-container transition-colors">
+              <h3 className="font-headline-sm text-headline-sm text-slate-950 mb-3 group-hover:text-amber-800 transition-colors">
                 {item.title}
               </h3>
-              <p className="font-body-md text-body-md text-on-primary-container leading-relaxed">
+              <p className="font-body-md text-body-md text-slate-600 leading-relaxed">
                 {item.description}
               </p>
             </div>
           ))}
         </div>
 
-        {/* Executive Movement Banner */}
-        <div className="rounded-3xl bg-tertiary-container/90 border border-secondary-container/30 p-8 sm:p-14 text-center max-w-4xl mx-auto relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-secondary-container/10 blur-[80px] pointer-events-none" />
-          <span className="font-label-sm text-label-sm uppercase tracking-widest text-secondary-container block mb-3">
+        {/* Executive Movement Banner: Crisp White Contrast */}
+        <div className="rounded-3xl bg-white text-slate-900 border border-slate-200 p-8 sm:p-14 text-center max-w-4xl mx-auto shadow-2xl relative overflow-hidden">
+          <span className="font-label-sm text-label-sm uppercase tracking-widest text-amber-800 block mb-3 font-bold">
             ACADEMIC CHARTER
           </span>
-          <h2 className="font-headline-md sm:font-headline-lg text-headline-md sm:text-headline-lg text-surface-container-lowest mb-4">
+          <h2 className="font-headline-md sm:font-headline-lg text-headline-md sm:text-headline-lg text-slate-950 mb-4">
             Discover Our Educational Movement
           </h2>
-          <p className="font-body-md text-body-md text-on-primary-container max-w-xl mx-auto mb-8">
+          <p className="font-body-md text-body-md text-slate-600 max-w-xl mx-auto mb-8">
             Access institutional models, corporate balance sheet autopsies, and macroeconomic frameworks built with quantitative precision.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/#curriculum-breakdown"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-label-md text-label-md uppercase tracking-wider bg-secondary-container text-on-secondary-container font-bold hover:brightness-110 shadow-[0_4px_20px_rgba(254,222,178,0.25)] transition-all"
+              href="/courses"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-label-md text-label-md uppercase tracking-wider bg-[#0d1c32] text-secondary-container font-bold hover:bg-slate-900 shadow-xl transition-all"
             >
-              Explore Curriculum Syllabi &rarr;
+              Explore Courses &amp; Syllabi &rarr;
             </Link>
             <Link
               href="/resources"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-label-md text-label-md uppercase tracking-wider bg-primary-container border border-surface-container-lowest/20 text-surface-container-lowest hover:border-secondary-container transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-label-md text-label-md uppercase tracking-wider bg-slate-100 border border-slate-300 text-slate-800 hover:bg-slate-200 transition-all font-semibold"
             >
               Download Financial Models
             </Link>
