@@ -142,31 +142,41 @@ export const ExecutiveAcademyHome: React.FC = () => {
   const [courseFlyoutOpen, setCourseFlyoutOpen] = useState(false);
   const [activeCourseTab, setActiveCourseTab] = useState('tab-business');
 
-  // Masterclass Video Sound State (Enabled by default for one playthrough)
+  // Masterclass Video Sound & Hero Reveal State
   const [masterclassSound, setMasterclassSound] = useState(true);
+  const [heroContentRevealed, setHeroContentRevealed] = useState(false);
   const masterclassVideoRef = useRef<HTMLVideoElement>(null);
   const hasAudioPlayedOnceRef = useRef(false);
+  const heroRevealedRef = useRef(false);
 
-  // Stop audio after first playthrough, then let video loop silently
+  // Trigger cinematic animated entrance of logo & words after video plays once
+  const triggerHeroReveal = () => {
+    if (heroRevealedRef.current) return;
+    heroRevealedRef.current = true;
+    setHeroContentRevealed(true);
+    hasAudioPlayedOnceRef.current = true;
+    const video = masterclassVideoRef.current;
+    if (video) {
+      video.muted = true;
+      setMasterclassSound(false);
+    }
+  };
+
+  // Stop audio after first playthrough, then let video loop silently and animate words in
   const handleVideoEnded = () => {
+    triggerHeroReveal();
     const video = masterclassVideoRef.current;
     if (!video) return;
-    hasAudioPlayedOnceRef.current = true;
-    video.muted = true;
-    setMasterclassSound(false);
-    // Continue playing video silently in background
     video.currentTime = 0;
     video.play().catch(() => {});
   };
 
   const handleTimeUpdate = () => {
     const video = masterclassVideoRef.current;
-    if (!video || hasAudioPlayedOnceRef.current) return;
-    // Guard: detect end of first playthrough and mute audio immediately
-    if (video.duration > 0 && video.currentTime >= video.duration - 0.4) {
-      hasAudioPlayedOnceRef.current = true;
-      video.muted = true;
-      setMasterclassSound(false);
+    if (!video || heroRevealedRef.current) return;
+    // Guard: detect end of first playthrough and reveal content + mute audio
+    if (video.duration > 0 && video.currentTime >= video.duration - 0.45) {
+      triggerHeroReveal();
     }
   };
 
@@ -199,6 +209,13 @@ export const ExecutiveAcademyHome: React.FC = () => {
         window.addEventListener('touchstart', enableSoundOnGesture, { once: true });
       });
     }
+
+    // Safety fallback: if video stalls or takes longer than 22s, reveal hero content
+    const fallbackTimer = setTimeout(() => {
+      triggerHeroReveal();
+    }, 22000);
+
+    return () => clearTimeout(fallbackTimer);
   }, []);
 
 
@@ -835,30 +852,70 @@ export const ExecutiveAcademyHome: React.FC = () => {
               <div className="absolute inset-0 bg-radial from-transparent via-black/20 to-black/85 pointer-events-none" />
             </div>
 
-            {/* Foreground Cinematic Hero Branding */}
-            <div className="relative z-20 text-center px-6 max-w-4xl mx-auto flex flex-col items-center justify-center space-y-6">
-              {/* Circular Logo Monogram */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/70 bg-black flex items-center justify-center mb-1">
+            {/* Foreground Cinematic Hero Branding (Enters in animated way after video plays once) */}
+            <div
+              className={`relative z-20 text-center px-6 max-w-4xl mx-auto flex flex-col items-center justify-center space-y-6 transition-all duration-1000 ease-out ${
+                heroContentRevealed
+                  ? 'opacity-100 pointer-events-auto'
+                  : 'opacity-0 pointer-events-none'
+              }`}
+            >
+              {/* Circular Logo Monogram with Staggered Entrance */}
+              <div
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/70 bg-black flex items-center justify-center mb-1 transition-all duration-1000 ease-out transform ${
+                  heroContentRevealed
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 -translate-y-12 scale-50'
+                }`}
+              >
                 <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
               </div>
 
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fcd997]/15 backdrop-blur-md border border-[#fcd997]/40 text-xs font-mono uppercase tracking-widest text-[#fcd997] shadow-lg">
+              {/* Badge */}
+              <div
+                className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fcd997]/15 backdrop-blur-md border border-[#fcd997]/40 text-xs font-mono uppercase tracking-widest text-[#fcd997] shadow-lg transition-all duration-700 ease-out delay-200 transform ${
+                  heroContentRevealed
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-8'
+                }`}
+              >
                 <span className="w-2 h-2 rounded-full bg-[#fcd997] animate-ping" />
                 The FQore Education Series
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight drop-shadow-[0_10px_35px_rgba(0,0,0,0.95)] uppercase leading-none">
+              {/* Main Headline */}
+              <h1
+                className={`font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white tracking-tight drop-shadow-[0_10px_35px_rgba(0,0,0,0.95)] uppercase leading-none transition-all duration-1000 ease-out delay-400 transform ${
+                  heroContentRevealed
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-10 scale-95'
+                }`}
+              >
                 Not Just Knowledge. <br />
                 <span className="bg-gradient-to-r from-[#fcd997] via-[#f7d79b] to-[#cba258] bg-clip-text text-transparent">
                   Real Solutions.
                 </span>
               </h1>
 
-              <p className="text-sm sm:text-base md:text-lg text-slate-200 max-w-2xl font-light leading-relaxed drop-shadow-md">
+              {/* Subtitle Words */}
+              <p
+                className={`text-sm sm:text-base md:text-lg text-slate-200 max-w-2xl font-light leading-relaxed drop-shadow-md transition-all duration-700 ease-out delay-600 transform ${
+                  heroContentRevealed
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-8'
+                }`}
+              >
                 From Beginner to Disciplined Trader &bull; Institutional Price Action &bull; Financial Modeling &bull; Business Autopsies
               </p>
 
-              <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
+              {/* Action Buttons */}
+              <div
+                className={`flex flex-wrap items-center justify-center gap-4 pt-3 transition-all duration-700 ease-out delay-800 transform ${
+                  heroContentRevealed
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-8'
+                }`}
+              >
                 {/* Sound Toggle Button */}
                 <button
                   onClick={() => {
@@ -895,11 +952,30 @@ export const ExecutiveAcademyHome: React.FC = () => {
               </div>
 
               {/* Scroll Indicator */}
-              <div className="pt-6 flex flex-col items-center gap-1 text-slate-400 text-[11px] font-mono uppercase tracking-widest animate-bounce">
+              <div
+                className={`pt-6 flex flex-col items-center gap-1 text-slate-400 text-[11px] font-mono uppercase tracking-widest animate-bounce transition-all duration-700 ease-out delay-1000 ${
+                  heroContentRevealed ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
                 <span>Scroll Down</span>
                 <span className="material-symbols-outlined text-[18px] text-[#fcd997]">expand_more</span>
               </div>
             </div>
+
+            {/* Subtle Overlay Badge while initial video is playing */}
+            {!heroContentRevealed && (
+              <div className="absolute bottom-8 z-30 flex items-center gap-3">
+                <button
+                  onClick={() => triggerHeroReveal()}
+                  className="px-5 py-2 rounded-full bg-black/65 hover:bg-black/85 backdrop-blur-md border border-[#fcd997]/40 text-[#fcd997] text-xs font-mono tracking-wider flex items-center gap-2.5 transition-all cursor-pointer shadow-[0_0_25px_rgba(252,217,151,0.25)] hover:scale-105"
+                  title="Click to reveal text immediately"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span>Masterclass Intro Playing</span>
+                  <span className="text-white/60 text-[11px]">&bull; Click to skip &rarr;</span>
+                </button>
+              </div>
+            )}
           </section>
 
           {/* 2. TOP NAVIGATION VISUAL MIRROR WITH INTERACTIVE COURSE FLYOUT (Second Image in Prompt) */}

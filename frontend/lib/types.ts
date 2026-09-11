@@ -112,6 +112,7 @@ export interface Content {
   published: boolean;
   publishedAt?: string;
   views: number;
+  downloadsCount?: number;
   bookmarkCount: number;
   readTimeMinutes: number;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
