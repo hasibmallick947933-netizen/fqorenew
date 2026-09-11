@@ -184,31 +184,52 @@ export const ExecutiveAcademyHome: React.FC = () => {
     const video = masterclassVideoRef.current;
     if (!video) return;
 
-    // Set audio on by default for the initial play
+    // Immediately configure audio for unmuted start
     video.muted = false;
-    video.volume = 0.85;
+    video.volume = 1.0;
 
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // If modern browser autoplay policy blocks unmuted audio before user interaction,
-        // start playback and unmute on the very first user click/scroll
+    const startAudioPlayback = async () => {
+      try {
+        video.muted = false;
+        video.volume = 1.0;
+        await video.play();
+        setMasterclassSound(true);
+      } catch (autoplayError) {
+        // If modern browser autoplay policy temporarily restricts unmuted sound
+        // before the first interaction, start playback and immediately unmute
+        // on ANY user movement (pointermove, mousemove, scroll, touch, click, keydown)
         video.muted = true;
-        video.play().catch(() => {});
-        const enableSoundOnGesture = () => {
-          if (masterclassVideoRef.current && !hasAudioPlayedOnceRef.current) {
-            masterclassVideoRef.current.muted = false;
+        try {
+          await video.play();
+        } catch (_) {}
+
+        const unmuteImmediately = () => {
+          if (video && !hasAudioPlayedOnceRef.current) {
+            video.muted = false;
+            video.volume = 1.0;
+            video.play().catch(() => {});
             setMasterclassSound(true);
           }
-          window.removeEventListener('click', enableSoundOnGesture);
-          window.removeEventListener('scroll', enableSoundOnGesture);
-          window.removeEventListener('touchstart', enableSoundOnGesture);
+          detachListeners();
         };
-        window.addEventListener('click', enableSoundOnGesture, { once: true });
-        window.addEventListener('scroll', enableSoundOnGesture, { once: true });
-        window.addEventListener('touchstart', enableSoundOnGesture, { once: true });
-      });
-    }
+
+        const detachListeners = () => {
+          const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'mousemove', 'pointermove', 'focus'];
+          events.forEach((evt) => {
+            window.removeEventListener(evt, unmuteImmediately);
+            document.removeEventListener(evt, unmuteImmediately);
+          });
+        };
+
+        const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'mousemove', 'pointermove', 'focus'];
+        events.forEach((evt) => {
+          window.addEventListener(evt, unmuteImmediately, { once: true, passive: true });
+          document.addEventListener(evt, unmuteImmediately, { once: true, passive: true });
+        });
+      }
+    };
+
+    startAudioPlayback();
 
     // Safety fallback: if video stalls or takes longer than 22s, reveal hero content
     const fallbackTimer = setTimeout(() => {
@@ -964,15 +985,36 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
             {/* Subtle Overlay Badge while initial video is playing */}
             {!heroContentRevealed && (
-              <div className="absolute bottom-8 z-30 flex items-center gap-3">
+              <div className="absolute bottom-8 z-30 flex flex-wrap items-center justify-center gap-3 px-4">
                 <button
-                  onClick={() => triggerHeroReveal()}
-                  className="px-5 py-2 rounded-full bg-black/65 hover:bg-black/85 backdrop-blur-md border border-[#fcd997]/40 text-[#fcd997] text-xs font-mono tracking-wider flex items-center gap-2.5 transition-all cursor-pointer shadow-[0_0_25px_rgba(252,217,151,0.25)] hover:scale-105"
-                  title="Click to reveal text immediately"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (masterclassVideoRef.current) {
+                      const next = !masterclassSound;
+                      masterclassVideoRef.current.muted = !next;
+                      masterclassVideoRef.current.volume = 1.0;
+                      if (next) masterclassVideoRef.current.play().catch(() => {});
+                      setMasterclassSound(next);
+                    }
+                  }}
+                  className="px-5 py-2.5 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md border border-[#fcd997]/50 text-[#fcd997] text-xs font-mono tracking-wider flex items-center gap-2 transition-all cursor-pointer shadow-[0_0_25px_rgba(252,217,151,0.3)] hover:scale-105"
+                  title="Toggle Audio"
                 >
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                  <span>Masterclass Intro Playing</span>
-                  <span className="text-white/60 text-[11px]">&bull; Click to skip &rarr;</span>
+                  <span className="material-symbols-outlined text-[16px] text-emerald-400">
+                    {masterclassSound ? 'volume_up' : 'volume_off'}
+                  </span>
+                  <span>{masterclassSound ? 'Masterclass Audio Playing' : 'Click to Enable Sound'}</span>
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    triggerHeroReveal();
+                  }}
+                  className="px-4 py-2.5 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/25 text-white/85 hover:text-white text-xs font-mono tracking-wider transition-all cursor-pointer"
+                  title="Skip to overview"
+                >
+                  <span>Skip Intro &rarr;</span>
                 </button>
               </div>
             )}
