@@ -144,9 +144,8 @@ export const ExecutiveAcademyHome: React.FC = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [mobileCoursesOpen, setMobileCoursesOpen] = useState(false);
 
-  // Masterclass Video Sound, Splash & Hero Reveal State
+  // Masterclass Video Sound & Hero Reveal State
   const [masterclassSound, setMasterclassSound] = useState(true);
-  const [audioSplashOpen, setAudioSplashOpen] = useState(false);
   const [heroContentRevealed, setHeroContentRevealed] = useState(false);
   const masterclassVideoRef = useRef<HTMLVideoElement>(null);
   const hasAudioPlayedOnceRef = useRef(false);
@@ -183,65 +182,60 @@ export const ExecutiveAcademyHome: React.FC = () => {
     }
   };
 
-  // Immediate one-touch / tap audio activation for mobile and desktop
-  const enterExperienceWithSound = () => {
+  // Immediate audio unmute function
+  const unmuteInstantly = () => {
     const video = masterclassVideoRef.current;
-    if (video) {
+    if (video && !hasAudioPlayedOnceRef.current) {
       video.muted = false;
       video.volume = 1.0;
       video.play().catch(() => {});
       setMasterclassSound(true);
     }
-    setAudioSplashOpen(false);
   };
 
   useEffect(() => {
     const video = masterclassVideoRef.current;
     if (!video) return;
 
-    // Configure video attributes for unmuted launch
-    video.muted = false;
-    video.volume = 1.0;
-
+    // Direct immediate audio playback attempt on website opening
     const startAudioPlayback = async () => {
       try {
         video.muted = false;
         video.volume = 1.0;
         await video.play();
         setMasterclassSound(true);
-        setAudioSplashOpen(false);
       } catch (autoplayError) {
-        // Modern browser / iOS Safari / Android autoplay policy restricted unmuted audio on cold start
-        // Keep video rolling silently in background and show the Tap-to-Enter curtain immediately
+        // If modern browser autoplay policy restricts unmuted audio on cold visit,
+        // keep video playing muted immediately so visual frames roll smoothly:
         video.muted = true;
         try {
           await video.play();
         } catch (_) {}
-        setAudioSplashOpen(true);
+        setMasterclassSound(false);
 
-        const unmuteOnFirstGesture = () => {
+        // Instantly unmute on the user's very first contact (screen touch, scroll, pointer, click, keypress)
+        const unlockAudioOnContact = () => {
           if (video && !hasAudioPlayedOnceRef.current) {
             video.muted = false;
             video.volume = 1.0;
             video.play().catch(() => {});
             setMasterclassSound(true);
           }
-          setAudioSplashOpen(false);
-          detachListeners();
+          removeUnlockers();
         };
 
-        const detachListeners = () => {
-          const events = ['pointerdown', 'touchstart', 'click'];
+        const removeUnlockers = () => {
+          const events = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'scroll', 'wheel'];
           events.forEach((evt) => {
-            window.removeEventListener(evt, unmuteOnFirstGesture);
-            document.removeEventListener(evt, unmuteOnFirstGesture);
+            window.removeEventListener(evt, unlockAudioOnContact, { capture: true } as any);
+            document.removeEventListener(evt, unlockAudioOnContact, { capture: true } as any);
           });
         };
 
-        const events = ['pointerdown', 'touchstart', 'click'];
+        const events = ['touchstart', 'touchend', 'pointerdown', 'mousedown', 'keydown', 'scroll', 'wheel'];
         events.forEach((evt) => {
-          window.addEventListener(evt, unmuteOnFirstGesture, { once: true, passive: true });
-          document.addEventListener(evt, unmuteOnFirstGesture, { once: true, passive: true });
+          window.addEventListener(evt, unlockAudioOnContact, { capture: true, passive: true, once: true } as any);
+          document.addEventListener(evt, unlockAudioOnContact, { capture: true, passive: true, once: true } as any);
         });
       }
     };
@@ -255,6 +249,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
     return () => clearTimeout(fallbackTimer);
   }, []);
+
 
 
   // FAQ Accordion State
@@ -733,68 +728,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
   return (
     <div className="w-full bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-primary overflow-x-hidden relative">
-      {/* 0. FULLSCREEN AUDIO SPLASH CURTAIN FOR MOBILE & DESKTOP BROWSERS */}
-      {audioSplashOpen && (
-        <div
-          onClick={enterExperienceWithSound}
-          className="fixed inset-0 z-[100] bg-black/92 backdrop-blur-2xl flex flex-col items-center justify-center p-6 text-center select-none cursor-pointer transition-opacity duration-300 animate-in fade-in"
-        >
-          {/* Pulsing Golden Monogram */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 rounded-full bg-[#fcd997]/25 animate-ping" />
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-[0_0_50px_rgba(252,217,151,0.6)] ring-2 ring-[#fcd997]/80 bg-black flex items-center justify-center relative z-10">
-              <img src="/images/fqore-circle-logo.png" alt="FQore Logo" className="w-full h-full object-cover scale-105" />
-            </div>
-          </div>
-
-          {/* Title & Tagline */}
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#fcd997] mb-2 font-semibold">
-            FQore Executive Academy
-          </span>
-          <h2 className="font-serif text-2xl sm:text-4xl font-bold text-white mb-2 max-w-md">
-            Not Just Knowledge. <br />
-            <span className="bg-gradient-to-r from-[#fcd997] via-[#f7d79b] to-[#cba258] bg-clip-text text-transparent">
-              Real Solutions.
-            </span>
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-sm mb-8 font-light leading-relaxed">
-            High-definition masterclass sound &amp; visuals are ready. Tap anywhere on the screen to enter immediately.
-          </p>
-
-          {/* Tap-To-Enter Button */}
-          <div className="w-full max-w-xs py-3.5 px-6 rounded-full bg-gradient-to-r from-[#fcd997] to-[#cba258] text-[#0d1c32] font-mono text-xs sm:text-sm font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-[0_0_35px_rgba(252,217,151,0.45)] hover:scale-105 transition-transform animate-pulse">
-            <span className="material-symbols-outlined text-[20px]">volume_up</span>
-            <span>TAP TO ENTER WITH AUDIO</span>
-          </div>
-
-          {/* Equalizer animation */}
-          <div className="flex items-center gap-1 mt-6 h-5" aria-hidden="true">
-            <span className="w-1 h-3 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.3s]" />
-            <span className="w-1 h-5 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.15s]" />
-            <span className="w-1 h-2 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.45s]" />
-            <span className="w-1 h-4 bg-[#fcd997] rounded-full animate-bounce [animation-delay:-0.2s]" />
-            <span className="w-1 h-5 bg-[#fcd997] rounded-full animate-bounce" />
-          </div>
-
-          {/* Continue Muted Option */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setAudioSplashOpen(false);
-              if (masterclassVideoRef.current) {
-                masterclassVideoRef.current.muted = true;
-                masterclassVideoRef.current.play().catch(() => {});
-              }
-              setMasterclassSound(false);
-            }}
-            className="mt-8 text-[11px] font-mono text-slate-400 hover:text-white uppercase tracking-wider underline cursor-pointer p-2 transition-colors"
-          >
-            Continue silently without audio &rarr;
-          </button>
-        </div>
-      )}
-
       {/* 1. TOP SHELL HEADER */}
       <header className="fixed top-0 inset-x-0 z-50 bg-primary-container/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(13,28,50,0.25)] border-b border-surface-container-lowest/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-margin-desktop h-20 flex items-center justify-between gap-space-md">
@@ -1045,17 +978,22 @@ export const ExecutiveAcademyHome: React.FC = () => {
       <main className="w-full pt-20 bg-surface min-h-screen">
         <div className="flex flex-col w-full">
           {/* 1. CINEMATIC VIDEO HERO BACKGROUND */}
-          <section className="relative w-full h-[85vh] sm:h-[90vh] min-h-[560px] sm:min-h-[640px] max-h-[960px] overflow-hidden bg-black flex items-center justify-center">
+          <section
+            onClick={!masterclassSound && !heroContentRevealed ? unmuteInstantly : undefined}
+            className={`relative w-full h-[85vh] sm:h-[90vh] min-h-[560px] sm:min-h-[640px] max-h-[960px] overflow-hidden bg-black flex items-center justify-center select-none ${
+              !masterclassSound && !heroContentRevealed ? 'cursor-pointer' : ''
+            }`}
+          >
             {/* Full-bleed Static Background Video */}
             <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
               <video
                 ref={masterclassVideoRef}
                 autoPlay
-                muted={!masterclassSound}
-                onEnded={handleVideoEnded}
-                onTimeUpdate={handleTimeUpdate}
+                muted
                 playsInline
                 preload="auto"
+                onEnded={handleVideoEnded}
+                onTimeUpdate={handleTimeUpdate}
                 className="w-full h-full object-cover object-center brightness-75 contrast-110"
               >
                 <source src="https://res.cloudinary.com/xbvjx6qb/video/upload/v1789135767/video.mp4" type="video/mp4" />
@@ -1190,13 +1128,17 @@ export const ExecutiveAcademyHome: React.FC = () => {
                       setMasterclassSound(next);
                     }
                   }}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-black/80 hover:bg-black/95 backdrop-blur-md border border-[#fcd997]/60 text-[#fcd997] text-xs font-mono tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_0_25px_rgba(252,217,151,0.35)] active:scale-95"
+                  className={`w-full sm:w-auto px-5 py-2.5 rounded-full backdrop-blur-md border text-xs font-mono tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 ${
+                    masterclassSound
+                      ? 'bg-black/80 hover:bg-black/95 border-[#fcd997]/60 text-[#fcd997] shadow-[0_0_25px_rgba(252,217,151,0.35)]'
+                      : 'bg-gradient-to-r from-[#fcd997] to-[#cba258] text-[#0d1c32] font-bold border-[#fcd997] shadow-[0_0_30px_rgba(252,217,151,0.6)] animate-pulse'
+                  }`}
                   title="Toggle Audio"
                 >
-                  <span className="material-symbols-outlined text-[16px] text-emerald-400">
-                    {masterclassSound ? 'volume_up' : 'volume_off'}
+                  <span className={`material-symbols-outlined text-[16px] ${masterclassSound ? 'text-emerald-400' : 'text-[#0d1c32]'}`}>
+                    volume_up
                   </span>
-                  <span>{masterclassSound ? 'Masterclass Audio Playing' : 'Tap to Enable Sound'}</span>
+                  <span>{masterclassSound ? 'Masterclass Audio Playing' : 'Tap for Sound 🔊'}</span>
                 </button>
 
                 <button
