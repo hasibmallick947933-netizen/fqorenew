@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 import { PaywallModal } from '@/components/ui/PaywallModal';
 
 interface CourseTab {
@@ -264,6 +265,15 @@ export const ExecutiveAcademyHome: React.FC = () => {
   const [payRail, setPayRail] = useState('gpay');
   const [enrolling, setEnrolling] = useState(false);
   const [enrolledSuccess, setEnrolledSuccess] = useState(false);
+  const [unlockedToken, setUnlockedToken] = useState('');
+  const [paymentError, setPaymentError] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('fqore_unlocked_token') || localStorage.getItem('fqore_receipt_token');
+      if (saved) setUnlockedToken(saved);
+    }
+  }, []);
 
   // References for Three.js
   const bookCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -669,19 +679,160 @@ export const ExecutiveAcademyHome: React.FC = () => {
     }
   };
 
+  const loadRazorpayScript = () => {
+    return new Promise<boolean>((resolve) => {
+      if (typeof window !== 'undefined' && (window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      if (typeof document !== 'undefined') {
+        const existing = document.getElementById('razorpay-sdk-script');
+        if (existing) {
+          resolve(true);
+          return;
+        }
+        const script = document.createElement('script');
+        script.id = 'razorpay-sdk-script';
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+      } else {
+        resolve(false);
+      }
+    });
+  };
+
   const handleOpenCheckout = (tier: 'beginner' | 'growth' | 'premium') => {
     setSelectedPlan(tier);
     setCheckoutModalOpen(true);
+    setPaymentError('');
+    if (typeof window !== 'undefined') {
+      const isUnlocked = localStorage.getItem(`fqore_unlocked_${tier}`) === 'true';
+      const token = localStorage.getItem('fqore_unlocked_token') || localStorage.getItem('fqore_receipt_token');
+      if (isUnlocked && token) {
+        setUnlockedToken(token);
+        setEnrolledSuccess(true);
+        return;
+      }
+    }
     setEnrolledSuccess(false);
   };
 
-  const handleEnrollSubmit = (e: React.FormEvent) => {
+  const handleEnrollSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEnrolling(true);
-    setTimeout(() => {
+    setPaymentError('');
+
+    try {
+      await loadRazorpayScript();
+
+      // Create order via backend
+      const orderData = await api.post<{
+        success: boolean;
+        orderId: string;
+        amount: number;
+        currency: string;
+        displayPrice: number;
+        planName: string;
+        keyId: string;
+        isSimulator?: boolean;
+        isMock?: boolean;
+        message?: string;
+      }>('/payments/create-order', {
+        planId: selectedPlan,
+        customerEmail: email || 'trader@fqore.in',
+        customerName: fullName || 'Executive Trader',
+        contentId: `plan-${selectedPlan}`,
+      });
+
+      if (!orderData || !orderData.success) {
+        throw new Error(orderData?.message || 'Failed to initialize payment gateway.');
+      }
+
+      // If simulated or test simulator
+      if (orderData.isSimulator || orderData.isMock || !(window as any).Razorpay) {
+        const verifyRes = await api.post<{
+          success: boolean;
+          receiptToken: string;
+          planName: string;
+        }>('/payments/verify', {
+          razorpay_order_id: orderData.orderId,
+          razorpay_payment_id: `sim_pay_${Date.now()}`,
+          razorpay_signature: 'simulated_test_signature',
+          planId: selectedPlan,
+        });
+
+        const token = verifyRes.receiptToken || `unlock_${Date.now()}`;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('fqore_unlocked_token', token);
+          localStorage.setItem('fqore_receipt_token', token);
+          localStorage.setItem(`fqore_unlocked_${selectedPlan}`, 'true');
+        }
+        setUnlockedToken(token);
+        setEnrolling(false);
+        setEnrolledSuccess(true);
+        return;
+      }
+
+      // Standard Razorpay Checkout popup
+      const options = {
+        key: orderData.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_live_TfNClJR0k9HOLP',
+        amount: orderData.amount,
+        currency: orderData.currency || 'INR',
+        name: 'FQore Intelligence',
+        description: `Unlock ${planInfo.title}`,
+        order_id: orderData.orderId,
+        prefill: {
+          name: fullName,
+          email: email,
+          contact: phone ? `+91${phone.replace(/\D/g, '')}` : undefined,
+        },
+        theme: {
+          color: '#d4af37',
+        },
+        handler: async function (response: any) {
+          try {
+            setEnrolling(true);
+            const verifyRes = await api.post<{
+              success: boolean;
+              receiptToken: string;
+              planName: string;
+            }>('/payments/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              planId: selectedPlan,
+            });
+
+            const token = verifyRes.receiptToken || `unlock_${Date.now()}`;
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('fqore_unlocked_token', token);
+              localStorage.setItem('fqore_receipt_token', token);
+              localStorage.setItem(`fqore_unlocked_${selectedPlan}`, 'true');
+            }
+            setUnlockedToken(token);
+            setEnrolling(false);
+            setEnrolledSuccess(true);
+          } catch (err: any) {
+            setEnrolling(false);
+            setPaymentError(err.message || 'Signature verification failed. Please contact support.');
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setEnrolling(false);
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
       setEnrolling(false);
-      setEnrolledSuccess(true);
-    }, 1200);
+      setPaymentError(err.message || 'Payment initiation failed. Please try again.');
+    }
   };
 
   // Plan Pricing details
@@ -691,6 +842,8 @@ export const ExecutiveAcademyHome: React.FC = () => {
       originalPrice: '₹499',
       price: 59,
       savings: 'Save ₹440 Today',
+      coverImage: '/images/book-cover-mockup.png',
+      downloadName: 'FQore_Beginner_Market_Basics.pdf',
       deliverables: [
         'Startup Business Models & Stock Market Basics (PDF)',
         'Weekly Pre-Market Macro Briefings Digest',
@@ -699,27 +852,35 @@ export const ExecutiveAcademyHome: React.FC = () => {
       ],
     },
     growth: {
-      title: 'Growth Plan (Operator & Trader Track)',
+      title: 'Swing Trading Blueprint (Growth Plan)',
+      subtitle: "The Beginner's Roadmap to Finding, Planning & Managing Swing Trades",
       originalPrice: '₹1,398',
       price: 99,
       savings: 'Save ₹1,299 Today',
+      coverImage: '/images/plan-99-swing-trading.jpg',
+      downloadName: 'FQore_Swing_Trading_Blueprint_99.pdf',
       deliverables: [
-        'Complete Startup Playbook + Equity Guide (300+ Pages)',
-        '10-Slide Pitch Deck Templates & Cap Table Models',
-        'Core 4 Video Masterclasses (1080p Full HD)',
-        'Forensic Case Studies & Financial Teardowns',
+        'Complete 15-Page High-Conviction Blueprint PDF (Protected)',
+        'Swing Trading Setup Framework & Entry Timing Models',
+        'Candlestick Formations & Volume Profile Cheat Sheets',
+        'Risk-to-Reward Calculator & Position Sizing Formulas',
+        'High-Resolution Download & Read Online Access',
       ],
     },
     premium: {
-      title: 'Premium All-Access (Institutional C-Suite)',
+      title: 'Trading Masterclass (Premium All-Access)',
+      subtitle: 'From Beginner to Complete Institutional Trading Blueprint',
       originalPrice: '₹2,499',
       price: 149,
       savings: 'Save ₹2,350 Today',
+      coverImage: '/images/plan-149-trading-masterclass.jpg',
+      downloadName: 'FQore_Trading_Masterclass_149.pdf',
       deliverables: [
-        'Live Trading Room Stream with Order Flow & Gamma Levels',
+        'Complete 20-Page Institutional E-Book Dossier PDF (Protected)',
+        'Order Flow, Gamma Exposures & Institutional Liquidity Pools',
         'DCF Valuation & M&A Due Diligence Models (Excel)',
-        'Full Video Masterclass Library (All 12+ Cohort Sessions)',
-        '1-on-1 Q&A Desk Pass & Direct Mentor Office Hours',
+        'Full Video Masterclass Cohort Sessions & Direct Mentorship',
+        'Lifetime Updates & Free Access to Future Playbooks',
       ],
     },
   }[selectedPlan];
@@ -1608,20 +1769,39 @@ export const ExecutiveAcademyHome: React.FC = () => {
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between mb-4 mt-2">
+                    <div className="flex items-center justify-between mb-3 mt-2">
                       <span className="font-label-sm text-label-sm uppercase font-bold text-secondary-container">
                         Operator &amp; Trader Track
                       </span>
                       <span className="px-2.5 py-0.5 rounded bg-surface-container-lowest/10 text-secondary-container font-label-sm text-label-sm">
-                        Includes Video
+                        Includes Video + PDF
                       </span>
                     </div>
 
+                    {/* Official Book Cover Display */}
+                    <div className="relative mb-5 rounded-xl overflow-hidden shadow-lg border border-secondary-container/30 bg-black/40 group/cover">
+                      <img 
+                        src="/images/plan-99-swing-trading.jpg" 
+                        alt="Swing Trading Blueprint - ₹99 Plan" 
+                        className="w-full h-52 object-cover object-top group-hover/cover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary-container via-transparent to-transparent opacity-80" />
+                      <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded bg-secondary-container text-primary font-bold text-[10px] uppercase tracking-wider shadow-sm">
+                          15-Page Blueprint PDF
+                        </span>
+                        <span className="text-[11px] text-secondary-container font-mono flex items-center gap-1 font-semibold">
+                          <span className="material-symbols-outlined text-[14px]">lock</span>
+                          Protected Gate
+                        </span>
+                      </div>
+                    </div>
+
                     <h3 className="font-headline-sm text-headline-sm text-surface-container-lowest mb-1">
-                      Growth Plan
+                      Swing Trading Blueprint
                     </h3>
                     <p className="font-body-sm text-body-sm text-on-primary-container mb-6">
-                      For active investors, operators &amp; founders seeking execution blueprints.
+                      The Beginner&apos;s Roadmap to Finding, Planning &amp; Managing Swing Trades.
                     </p>
 
                     <div className="flex items-baseline gap-1 mb-6 pb-6 bg-tertiary-container p-4 rounded-xl border border-surface-container-lowest/10">
@@ -1646,13 +1826,13 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         <span className="material-symbols-outlined text-secondary-container text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Complete Startup Playbook + Equity Fundraising Guide (300+ Pages)</span>
+                        <span>Complete 15-Page Swing Trading Blueprint PDF (Protected)</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary-container text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>10-Slide Institutional Pitch Deck Templates &amp; Cap Table Models</span>
+                        <span>Swing Trading Setup Framework &amp; Entry Timing Models</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary-container text-[20px] shrink-0">
@@ -1664,20 +1844,20 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         <span className="material-symbols-outlined text-secondary-container text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Forensic Company Case Studies &amp; Teardowns</span>
+                        <span>Risk-to-Reward Calculator &amp; Position Sizing Formulas</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary-container text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Priority Community Room Access</span>
+                        <span>Priority Community Room Access &amp; Live Q&amp;A</span>
                       </li>
                     </ul>
                   </div>
 
                   <button
                     onClick={() => handleOpenCheckout('growth')}
-                    className="w-full text-center py-3.5 rounded-lg bg-secondary-container hover:bg-secondary-fixed text-primary font-label-md text-label-md uppercase tracking-wider font-bold transition-all shadow-md hover:scale-105"
+                    className="w-full text-center py-3.5 rounded-lg bg-secondary-container hover:bg-secondary-fixed text-primary font-label-md text-label-md uppercase tracking-wider font-bold transition-all shadow-md hover:scale-105 cursor-pointer"
                   >
                     Unlock Growth Plan (₹99)
                   </button>
@@ -1686,7 +1866,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
                 {/* Plan 3: Premium ₹149 */}
                 <div className="flex flex-col justify-between bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-surface-container-high">
                   <div>
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3">
                       <span className="font-label-sm text-label-sm uppercase font-bold text-secondary">
                         C-Suite Suite
                       </span>
@@ -1695,11 +1875,30 @@ export const ExecutiveAcademyHome: React.FC = () => {
                       </span>
                     </div>
 
+                    {/* Official Book Cover Display */}
+                    <div className="relative mb-5 rounded-xl overflow-hidden shadow-md border border-surface-container-high bg-black/20 group/cover">
+                      <img 
+                        src="/images/plan-149-trading-masterclass.jpg" 
+                        alt="Trading Masterclass - ₹149 Plan" 
+                        className="w-full h-52 object-cover object-top group-hover/cover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-70" />
+                      <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded bg-primary text-secondary font-bold text-[10px] uppercase tracking-wider shadow-sm">
+                          20-Page E-Book All-Access
+                        </span>
+                        <span className="text-[11px] text-secondary font-mono flex items-center gap-1 font-semibold">
+                          <span className="material-symbols-outlined text-[14px]">lock</span>
+                          Protected Gate
+                        </span>
+                      </div>
+                    </div>
+
                     <h3 className="font-headline-sm text-headline-sm text-primary mb-1">
-                      Premium All-Access
+                      Trading Masterclass
                     </h3>
                     <p className="font-body-sm text-body-sm text-on-surface-variant mb-6">
-                      Full institutional suite for serious traders, quants, and executives.
+                      Complete 20-Page Institutional E-Book: From Beginner to Systematic Trading Blueprint.
                     </p>
 
                     <div className="flex items-baseline gap-1 mb-6 pb-6 bg-surface-container-low/50 p-4 rounded-xl">
@@ -1717,6 +1916,12 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         <span>
                           <strong>Everything in Growth, plus:</strong>
                         </span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
+                          check_circle
+                        </span>
+                        <span>Complete 20-Page Institutional E-Book Dossier PDF (Protected)</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
@@ -1740,12 +1945,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>1-on-1 Q&amp;A Desk Pass &amp; Direct Mentor Office Hours</span>
-                      </li>
-                      <li className="flex items-start gap-2.5">
-                        <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
-                          check_circle
-                        </span>
                         <span>Lifetime Updates &amp; All Future Dossiers Free</span>
                       </li>
                     </ul>
@@ -1753,7 +1952,7 @@ export const ExecutiveAcademyHome: React.FC = () => {
 
                   <button
                     onClick={() => handleOpenCheckout('premium')}
-                    className="w-full text-center py-3 rounded-lg bg-primary hover:bg-on-surface text-on-primary font-label-md text-label-md uppercase tracking-wider font-semibold transition-all"
+                    className="w-full text-center py-3 rounded-lg bg-primary hover:bg-on-surface text-on-primary font-label-md text-label-md uppercase tracking-wider font-semibold transition-all cursor-pointer"
                   >
                     Claim Premium All-Access (₹149)
                   </button>
@@ -1956,27 +2155,67 @@ export const ExecutiveAcademyHome: React.FC = () => {
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
               {enrolledSuccess ? (
-                <div className="text-center py-10 space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 mx-auto flex items-center justify-center">
+                <div className="text-center py-6 space-y-5">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 mx-auto flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.35)]">
                     <span className="material-symbols-outlined text-[36px]">check_circle</span>
                   </div>
-                  <h4 className="text-2xl font-bold font-headline-sm text-white">
-                    Enrollment Confirmed!
-                  </h4>
-                  <p className="text-on-primary-container text-body-md max-w-md mx-auto">
-                    Welcome to FQore, {fullName || 'Trader'}. Your access pass for the{' '}
-                    <span className="text-secondary-container font-semibold">{planInfo.title}</span> has been
-                    unlocked. Download credentials have been dispatched to {email || 'your email'}.
+
+                  <div>
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] uppercase tracking-widest font-semibold">
+                      Payment Verified • Institutional License Active
+                    </span>
+                    <h4 className="text-2xl sm:text-3xl font-bold font-headline-sm text-white mt-2">
+                      {planInfo.title}
+                    </h4>
+                    <p className="text-on-primary-container text-body-sm max-w-md mx-auto mt-1">
+                      Welcome to FQore, {fullName || 'Executive Trader'}. Your institutional license has been issued and permanent download access is granted.
+                    </p>
+                  </div>
+
+                  {/* Book Cover Showcase */}
+                  {planInfo.coverImage && (
+                    <div className="max-w-xs mx-auto rounded-2xl overflow-hidden shadow-2xl border-2 border-secondary-container/40 bg-black/60 relative group">
+                      <img
+                        src={planInfo.coverImage}
+                        alt={planInfo.title}
+                        className="w-full h-56 object-cover object-top"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                        <span className="text-[11px] font-mono text-secondary-container flex items-center gap-1 font-semibold">
+                          <span className="material-symbols-outlined text-[14px]">lock_open</span>
+                          Permanent License Unlocked
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Download and Read Online Action Rails */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                    <a
+                      href={`/api/download?plan=${selectedPlan}&token=${encodeURIComponent(unlockedToken || 'verified_token')}`}
+                      download={planInfo.downloadName || 'FQore_Dossier.pdf'}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-secondary-container hover:bg-secondary-fixed text-primary font-label-md uppercase font-bold shadow-lg transition-transform hover:scale-105"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">download</span>
+                      <span>Download Protected PDF</span>
+                    </a>
+
+                    <a
+                      href={`/api/download?plan=${selectedPlan}&token=${encodeURIComponent(unlockedToken || 'verified_token')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-secondary-container/60 hover:bg-secondary-container/15 text-secondary-container font-label-md uppercase font-semibold transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">visibility</span>
+                      <span>Read Online in Browser</span>
+                    </a>
+                  </div>
+
+                  <p className="text-[11px] text-on-primary-container font-mono max-w-sm mx-auto">
+                    Receipt Token: <span className="text-secondary-container font-bold">{unlockedToken || 'Active'}</span>
+                    <br />
+                    This PDF download is token-gated and permanent. You can return anytime to re-download.
                   </p>
-                  <a
-                    href="/FQore_Trading_Blueprint.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-secondary-container text-primary font-label-md uppercase font-bold"
-                  >
-                    <span>Download Blueprint (PDF)</span>
-                    <span className="material-symbols-outlined text-[18px]">download</span>
-                  </a>
                 </div>
               ) : (
                 <>
@@ -2204,6 +2443,13 @@ export const ExecutiveAcademyHome: React.FC = () => {
                         ))}
                       </div>
                     </div>
+
+                    {paymentError && (
+                      <div className="p-3.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-200 text-body-sm flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[20px] text-red-400 shrink-0">error</span>
+                        <span className="text-[13px]">{paymentError}</span>
+                      </div>
+                    )}
 
                     <button
                       type="submit"

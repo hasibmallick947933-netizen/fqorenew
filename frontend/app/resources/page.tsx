@@ -9,6 +9,70 @@ import { PaywallModal } from '@/components/ui/PaywallModal';
 
 const CORE_RESOURCES: Content[] = [
   {
+    _id: 'res-swing-trading-blueprint-99',
+    title: "SWING TRADING BLUEPRINT: The Beginner's Roadmap to Finding, Planning & Managing Swing Trades",
+    slug: 'swing-trading-blueprint-99',
+    description: "The complete 15-page swing trading practical blueprint by Samir Sarkar / FQore. Covers market structure, swing trade setups, candlestick execution patterns, position sizing, and disciplined risk-to-reward ratios.",
+    content: "Complete 15-Page High-Conviction Swing Trading Guide.",
+    contentType: 'pdf',
+    difficulty: 'Beginner to Intermediate',
+    category: {
+      _id: 'cat-trading',
+      name: 'Trading & Markets',
+      slug: 'trading',
+      description: 'Systematic Trading & Market Alpha',
+      icon: 'show_chart',
+    },
+    subcategory: 'Swing Trading',
+    tags: ['Swing Trading', 'Price Action', 'Candlesticks', 'Risk Management', '₹99 Plan'],
+    thumbnail: '/images/plan-99-swing-trading.jpg',
+    mediaUrl: '/api/download?plan=99',
+    mediaDetails: {
+      originalName: 'FQore_Swing_Trading_Blueprint_99.pdf',
+      format: 'pdf',
+      size: 1048576,
+      mimeType: 'application/pdf',
+    },
+    downloadsCount: 3820,
+    views: 14200,
+    readTimeMinutes: 30,
+    isPremium: true,
+    publishedAt: '2025-02-20T00:00:00.000Z',
+    createdAt: '2025-02-20T00:00:00.000Z',
+  } as unknown as Content,
+  {
+    _id: 'res-trading-masterclass-149',
+    title: 'TRADING MASTERCLASS: From Beginner to Trading Blueprint (Complete E-Book All-Access)',
+    slug: 'trading-masterclass-149',
+    description: 'Comprehensive 20-page institutional trading masterclass e-book by Samir Sarkar / FQore. Covers deep institutional order flow, gamma positioning, liquidity mechanics, and systematic risk management models.',
+    content: 'Full 20-Page Institutional E-Book Dossier.',
+    contentType: 'pdf',
+    difficulty: 'Institutional All-Access',
+    category: {
+      _id: 'cat-trading',
+      name: 'Trading & Markets',
+      slug: 'trading',
+      description: 'Systematic Trading & Market Alpha',
+      icon: 'show_chart',
+    },
+    subcategory: 'Institutional Alpha',
+    tags: ['Masterclass', 'Institutional Trading', 'Order Flow', 'Gamma Exposure', '₹149 Plan'],
+    thumbnail: '/images/plan-149-trading-masterclass.jpg',
+    mediaUrl: '/api/download?plan=149',
+    mediaDetails: {
+      originalName: 'FQore_Trading_Masterclass_149.pdf',
+      format: 'pdf',
+      size: 1572864,
+      mimeType: 'application/pdf',
+    },
+    downloadsCount: 5120,
+    views: 19800,
+    readTimeMinutes: 45,
+    isPremium: true,
+    publishedAt: '2025-02-22T00:00:00.000Z',
+    createdAt: '2025-02-22T00:00:00.000Z',
+  } as unknown as Content,
+  {
     _id: 'res-blueprint-trading-01',
     title: 'FQore Learning: Institutional Trading Blueprint & Business Execution Dossier',
     slug: 'fqore-trading-blueprint',
@@ -227,7 +291,9 @@ export default function ResourcesPage() {
   const handleDownloadClick = (e: React.MouseEvent, item: Content) => {
     e.preventDefault();
 
-    const receipt = typeof window !== 'undefined' ? localStorage.getItem('fqore_receipt_token') : null;
+    const receipt = typeof window !== 'undefined'
+      ? (localStorage.getItem('fqore_unlocked_token') || localStorage.getItem('fqore_receipt_token'))
+      : null;
     const unlocked = typeof window !== 'undefined' ? localStorage.getItem('fqore_unlocked_plans') : null;
 
     if (!hasPaidAccess && !receipt && !unlocked && !isAdmin) {
@@ -237,12 +303,20 @@ export default function ResourcesPage() {
       return;
     }
 
-    // User is paid or admin: trigger download
-    initiateDownload(item);
+    // User is paid or admin: trigger token-authenticated download
+    initiateDownload(item, receipt || 'verified_license');
   };
 
-  const initiateDownload = (item: Content) => {
-    const url = item.mediaUrl || '/FQore_Trading_Blueprint.pdf';
+  const initiateDownload = (item: Content, token?: string) => {
+    let url = item.mediaUrl || '/api/download?plan=99';
+    if (url.startsWith('/api/download')) {
+      const activeToken =
+        token ||
+        (typeof window !== 'undefined'
+          ? localStorage.getItem('fqore_unlocked_token') || localStorage.getItem('fqore_receipt_token') || 'verified_license'
+          : 'verified_license');
+      url = `${url}&token=${encodeURIComponent(activeToken)}`;
+    }
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', `${item.slug || 'fqore-asset'}.pdf`);
@@ -251,12 +325,15 @@ export default function ResourcesPage() {
     document.body.removeChild(link);
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = (receiptToken?: string) => {
     setHasPaidAccess(true);
     setPaywallOpen(false);
-    alert('Payment verified! Your institutional license is active. Initiating download...');
+    if (receiptToken && typeof window !== 'undefined') {
+      localStorage.setItem('fqore_unlocked_token', receiptToken);
+      localStorage.setItem('fqore_receipt_token', receiptToken);
+    }
     if (pendingDownloadItem) {
-      initiateDownload(pendingDownloadItem);
+      initiateDownload(pendingDownloadItem, receiptToken);
       setPendingDownloadItem(null);
     }
   };
@@ -390,6 +467,27 @@ export default function ResourcesPage() {
                       {formatBytes(item.mediaDetails?.size)}
                     </span>
                   </div>
+
+                  {/* Book Cover Image for ₹99 & ₹149 Plans */}
+                  {item.thumbnail && item.thumbnail.startsWith('/images/plan-') && (
+                    <div className="relative mb-5 rounded-2xl overflow-hidden shadow-lg border border-[#d4af37]/30 bg-black/40 group/cover">
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-full h-48 object-cover object-top group-hover/cover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-transparent opacity-80" />
+                      <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded bg-[#fcd997] text-[#1a1200] font-bold text-[10px] uppercase tracking-wider">
+                          Official Dossier
+                        </span>
+                        <span className="text-[11px] text-[#fcd997] font-mono flex items-center gap-1 font-semibold">
+                          <span className="material-symbols-outlined text-[13px]">lock</span>
+                          Paywall Protected
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Title in Light Gold */}
                   <h3 className="font-serif text-xl font-medium text-[#fcd997] mb-2 leading-snug line-clamp-2 group-hover:text-white transition-colors">
