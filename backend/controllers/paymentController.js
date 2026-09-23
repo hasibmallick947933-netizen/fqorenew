@@ -115,6 +115,10 @@ exports.createOrder = async (req, res, next) => {
       isSimulator = true;
     }
 
+    // Only pass contentId if it's a valid MongoDB ObjectId (prevents BSONError)
+    const safeContentId =
+      contentId && mongoose.Types.ObjectId.isValid(contentId) ? contentId : null;
+
     const order = await Order.create({
       orderId,
       planId: plan._id,
@@ -124,7 +128,7 @@ exports.createOrder = async (req, res, next) => {
       status: 'created',
       customerEmail: customerEmail || '',
       customerName: customerName || 'Guest Learner',
-      contentId: contentId || null,
+      contentId: safeContentId,
     });
 
     res.status(200).json({

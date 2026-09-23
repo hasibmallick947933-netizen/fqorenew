@@ -744,7 +744,6 @@ export const ExecutiveAcademyHome: React.FC = () => {
         planId: selectedPlan,
         customerEmail: email || 'trader@fqore.in',
         customerName: fullName || 'Executive Trader',
-        contentId: `plan-${selectedPlan}`,
       });
 
       if (!orderData || !orderData.success) {
