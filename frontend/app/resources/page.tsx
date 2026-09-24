@@ -9,6 +9,38 @@ import { PaywallModal } from '@/components/ui/PaywallModal';
 
 const CORE_RESOURCES: Content[] = [
   {
+    _id: 'res-trading-beginner-blueprint-59',
+    title: 'TRADING BEGINNER BLUEPRINT: Your Step-by-Step Roadmap to Understanding, Planning & Practicing Trading',
+    slug: 'trading-beginner-blueprint-59',
+    description: 'The complete 20-page trading beginner guide by FQore. Covers market structure, essential setups, candlestick reading, and building a consistent trading plan.',
+    content: 'Complete 20-Page Practical Guide PDF.',
+    contentType: 'pdf',
+    difficulty: 'Beginner',
+    category: {
+      _id: 'cat-trading',
+      name: 'Trading & Markets',
+      slug: 'trading',
+      description: 'Systematic Trading & Market Alpha',
+      icon: 'show_chart',
+    },
+    subcategory: 'Basics',
+    tags: ['Beginner', 'Market Basics', 'Trading Plan', '₹59 Plan'],
+    thumbnail: '/images/plan-59-trading-beginner.jpg',
+    mediaUrl: '/api/download?plan=59',
+    mediaDetails: {
+      originalName: 'FQore_Trading_Beginner_Blueprint_59.pdf',
+      format: 'pdf',
+      size: 1048576,
+      mimeType: 'application/pdf',
+    },
+    downloadsCount: 5120,
+    views: 18400,
+    readTimeMinutes: 45,
+    isPremium: true,
+    publishedAt: '2025-02-21T00:00:00.000Z',
+    createdAt: '2025-02-21T00:00:00.000Z',
+  } as unknown as Content,
+  {
     _id: 'res-swing-trading-blueprint-99',
     title: "SWING TRADING BLUEPRINT: The Beginner's Roadmap to Finding, Planning & Managing Swing Trades",
     slug: 'swing-trading-blueprint-99',

@@ -837,17 +837,19 @@ export const ExecutiveAcademyHome: React.FC = () => {
   // Plan Pricing details
   const planInfo = {
     beginner: {
-      title: 'Beginner Plan (Starter Tier)',
-      originalPrice: '₹499',
+      title: 'Trading Beginner Blueprint (Starter)',
+      subtitle: 'Your Step-by-Step Roadmap to Understanding, Planning & Practicing Trading',
+      originalPrice: '₹149',
       price: 59,
-      savings: 'Save ₹440 Today',
-      coverImage: '/images/book-cover-mockup.png',
-      downloadName: 'FQore_Beginner_Market_Basics.pdf',
+      savings: 'Save ₹90 Today',
+      coverImage: '/images/plan-59-trading-beginner.jpg',
+      downloadName: 'FQore_Trading_Beginner_Blueprint_59.pdf',
       deliverables: [
-        'Startup Business Models & Stock Market Basics (PDF)',
-        'Weekly Pre-Market Macro Briefings Digest',
-        'Standard Financial Glossary & Metric Formulas',
-        'Community Discussion Forum Access',
+        'Complete 20-Page Practical Guide PDF (Protected)',
+        'Trading Basics & Chart Analysis',
+        'Entry & Exit Strategies & Risk Management',
+        'Trading Psychology & Discipline Framework',
+        'High-Resolution Download & Read Online Access',
       ],
     },
     growth: {
@@ -1705,15 +1707,35 @@ export const ExecutiveAcademyHome: React.FC = () => {
                       </span>
                     </div>
 
-                    <h3 className="font-headline-sm text-headline-sm text-primary mb-1">Beginner Plan</h3>
+                    {/* Official Book Cover Display */}
+                    <div className="relative mb-5 rounded-xl overflow-hidden shadow-sm border border-outline-variant bg-surface-container-low group/cover">
+                      <img 
+                        src="/images/plan-59-trading-beginner.jpg" 
+                        alt="Trading Beginner Blueprint - ₹59 Plan" 
+                        className="w-full h-52 object-cover object-top group-hover/cover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-80" />
+                      <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 rounded bg-secondary text-on-secondary font-bold text-[10px] uppercase tracking-wider shadow-sm">
+                          20-Page Practical Guide
+                        </span>
+                        <span className="text-[11px] text-on-surface font-mono flex items-center gap-1 font-semibold bg-surface/70 px-1.5 py-0.5 rounded backdrop-blur-sm">
+                          <span className="material-symbols-outlined text-[14px]">lock</span>
+                          Protected Gate
+                        </span>
+                      </div>
+                    </div>
+
+                    <h3 className="font-headline-sm text-headline-sm text-primary mb-1">Trading Beginner Blueprint</h3>
                     <p className="font-body-sm text-body-sm text-on-surface-variant mb-6">
-                      Essential foundational knowledge for aspiring traders &amp; operators.
+                      Your Step-by-Step Roadmap to Understanding, Planning &amp; Practicing Trading.
                     </p>
 
                     <div className="flex items-baseline gap-1 mb-6 pb-6 bg-surface-container-low/50 p-4 rounded-xl">
                       <span className="font-headline-lg text-headline-lg text-primary font-bold">₹59</span>
-                      <span className="font-body-sm text-body-sm text-on-surface-variant">
-                        / one-time investment
+                      <span className="font-body-sm text-body-sm text-on-surface-variant line-through opacity-70 ml-1">₹149</span>
+                      <span className="font-body-sm text-body-sm text-on-surface-variant ml-1">
+                        / one-time
                       </span>
                     </div>
 
@@ -1723,32 +1745,32 @@ export const ExecutiveAcademyHome: React.FC = () => {
                           check_circle
                         </span>
                         <span>
-                          <strong>2 Core Playbook PDFs:</strong> Startup Business Models &amp; Market Basics
+                          <strong>Complete 20-Page Practical Guide PDF</strong> (Protected)
                         </span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Weekly Pre-Market Macro Briefings Digest</span>
+                        <span>Trading Basics &amp; Chart Analysis</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Standard Financial Glossary &amp; Metric Formulas</span>
+                        <span>Entry &amp; Exit Strategies &amp; Risk Management</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Community Discussion Forum Access</span>
+                        <span>Trading Psychology &amp; Discipline Framework</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="material-symbols-outlined text-secondary text-[20px] shrink-0">
                           check_circle
                         </span>
-                        <span>Instant High-Resolution PDF Download</span>
+                        <span>High-Resolution Download &amp; Read Online Access</span>
                       </li>
                     </ul>
                   </div>

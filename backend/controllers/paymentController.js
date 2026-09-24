@@ -277,6 +277,9 @@ exports.downloadProtectedDossier = async (req, res, next) => {
     if (p.includes('149') || p.includes('premium') || p.includes('masterclass')) {
       filename = 'plan-149-trading-masterclass.pdf';
       downloadName = 'FQore_Trading_Masterclass_149.pdf';
+    } else if (p.includes('59') || p.includes('starter') || p.includes('beginner')) {
+      filename = 'plan-59-trading-beginner.pdf';
+      downloadName = 'FQore_Trading_Beginner_Blueprint_59.pdf';
     }
 
     const filePath = path.join(__dirname, '../storage/protected', filename);
